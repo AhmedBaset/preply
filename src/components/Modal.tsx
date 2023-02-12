@@ -23,8 +23,8 @@ function ModalComponent({
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setModal(null);
-   };
-   const [Description, setDescription]= React.useState("")
+	};
+	const [description, setDescription] = React.useState(teacher.description);
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		let v = {};
@@ -48,12 +48,12 @@ function ModalComponent({
 		}));
 	};
 
-	const handleTextareaChange = () => {
-		setTeacher((teacher) => ({
+   React.useEffect(() => {
+      setTeacher((teacher) => ({
 			...teacher,
-			description: Description,
+			description: description,
 		}));
-	};
+   }, [description])
 
 	return createPortal(
 		<div className="modal-overlay">
@@ -79,11 +79,11 @@ function ModalComponent({
 					) : (
 						<textarea
 							autoFocus={true}
-							defaultValue={
-								teacher[name as keyof typeof teacher] as string | number
-							}
+							value={description}
 							style={{ height: 300 }}
-							onChange={e => {setDescription(e.target.value); handleTextareaChange()}}
+							onChange={(e) => {
+								setDescription(e.target.value);
+							}}
 							placeholder={name}
 						></textarea>
 					)}

@@ -263,11 +263,23 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 							>
 								{isEdited ? "Save Changes" : "Saved"}
 							</button>
+							{isEdited && <button
+								onClick={() => setTeacher(teacherData)}
+								className="btn btn-secondary"
+							>Cancel</button>}
 						</div>
 					</div>
 				)}
 			</section>
-			{modal && <ModalComponent name={modal.key} inputType={modal.type} setModal={setModal} teacher={teacher} setTeacher={setTeacher} />}
+			{modal && (
+				<ModalComponent
+					name={modal.key}
+					inputType={modal.type}
+					setModal={setModal}
+					teacher={teacher}
+					setTeacher={setTeacher}
+				/>
+			)}
 		</>
 	);
 }
