@@ -56,7 +56,7 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 		description = {
 			short: teacher.description.slice(0, separate),
 			long: isShowAllDescription
-				? teacher.description.slice(separate)
+				? teacher.description.slice(separate + 3)
 				: teacher.description.slice(separate + 3, separate + 200),
 		};
 	} else {
@@ -175,9 +175,7 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 							</p>
 						)}
 						<div
-							className={`flex-center flex-wrap gap flex-auto ${
-								teacher.is_newly_joined ? "flex-col" : "flex-row"
-							}`}
+							className={`flex-center flex-wrap gap flex-auto flex-col`}
 						>
 							<div className="price">
 								<span onClick={() => editMode && openModal("price")}>
