@@ -48,12 +48,13 @@ function ModalComponent({
 		}));
 	};
 
-   React.useEffect(() => {
-      setTeacher((teacher) => ({
+	React.useEffect(() => {
+		setTeacher((teacher) => ({
 			...teacher,
 			description: description,
 		}));
-   }, [description])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [description]);
 
 	return createPortal(
 		<div className="modal-overlay">

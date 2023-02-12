@@ -48,12 +48,23 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 		});
 
 	// TODO: Devide description into two parts
-	const description = {
-		short: teacher.description.split(" ").slice(0, 7).join(" "),
-		long: isShowAllDescription
-			? teacher.description.split(" ").slice(7).join(" ")
-			: teacher.description.split(" ").slice(7, 30).join(" "),
-	};
+	const separate = teacher.description.indexOf("*-*");
+	let description;
+
+	if (separate !== -1) {
+		description = {
+			short: teacher.description.slice(0, separate),
+			long: teacher.description.slice(separate + 3),
+		};
+	} else {
+		description = {
+			short: teacher.description.split(" ").slice(0, 7).join(" "),
+			long: isShowAllDescription
+				? teacher.description.split(" ").slice(7).join(" ")
+				: teacher.description.split(" ").slice(7, 30).join(" "),
+		};
+	}
+
 
 	// TODO: Dropdowns
 	const controllers: [string, string[]][] = Object.entries(dropdowns).map(
@@ -76,6 +87,23 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 		setIsEdited(JSON.stringify(teacher) !== JSON.stringify(teacherData));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [teacherStringfied]);
+
+	// TODO: Prevent from closing the page without saving
+	// Uncomment this code to prevent from closing the page without saving
+	// React.useEffect(() => {
+	// 	window.addEventListener("beforeunload", (e) => {
+	// 		e = e || window.event;
+	// 		if (isEdited) {
+	// 			if (e) {
+	// 				e.preventDefault();
+	// 				e.returnValue = "There are some unsaved changes. Please save them.";
+	// 			}
+	// 			e.preventDefault();
+	// 			e.returnValue = "There are some unsaved changes. Please save them.";
+	// 			return "There are some unsaved changes. Please save them.";
+	// 		}
+	// 	});
+	// }, [isEdited])
 
 	async function updateData() {
 		const docRef = doc(db, COLLECTION_NAME, doc_id);
