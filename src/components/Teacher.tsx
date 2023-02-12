@@ -57,7 +57,7 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 			short: teacher.description.slice(0, separate),
 			long: isShowAllDescription
 				? teacher.description.slice(separate)
-				: teacher.description.slice(separate, separate + 200),
+				: teacher.description.slice(separate + 3, separate + 200),
 		};
 	} else {
 		description = {
