@@ -90,20 +90,20 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 
 	// TODO: Prevent from closing the page without saving
 	// Uncomment this code to prevent from closing the page without saving
-	// React.useEffect(() => {
-	// 	window.addEventListener("beforeunload", (e) => {
-	// 		e = e || window.event;
-	// 		if (isEdited) {
-	// 			if (e) {
-	// 				e.preventDefault();
-	// 				e.returnValue = "There are some unsaved changes. Please save them.";
-	// 			}
-	// 			e.preventDefault();
-	// 			e.returnValue = "There are some unsaved changes. Please save them.";
-	// 			return "There are some unsaved changes. Please save them.";
-	// 		}
-	// 	});
-	// }, [isEdited])
+	React.useEffect(() => {
+		window.addEventListener("beforeunload", (e) => {
+			e = e || window.event;
+			if (isEdited) {
+				if (e) {
+					e.preventDefault();
+					e.returnValue = "There are some unsaved changes. Please save them.";
+				}
+				e.preventDefault();
+				e.returnValue = "There are some unsaved changes. Please save them.";
+				return "There are some unsaved changes. Please save them.";
+			}
+		});
+	}, [isEdited])
 
 	async function updateData() {
 		const docRef = doc(db, COLLECTION_NAME, doc_id);
