@@ -157,10 +157,10 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 							<div className="flex-center flex-col gap flex-auto">
 								<div className="text-flex">
 									<StarSvg fill="#fdc425" height={13} width={13} />
-									<span>{teacher.rating}</span>
+									<span className="text-xl">{teacher.rating}</span>
 								</div>
-								<p onClick={() => openModal("n_of_reviews", "number")}>
-									{teacher.n_of_reviews} reviews
+								<p className="text-flex" onClick={() => openModal("n_of_reviews", "number")}>
+									<span>{teacher.n_of_reviews}</span><span>reviews</span>
 								</p>
 							</div>
 						)}
