@@ -4,8 +4,9 @@ import country from "./../countries";
 import { ReactComponent as GraduationSvg } from "./../assets/graduation.svg";
 import { ReactComponent as UserSvg } from "./../assets/user.svg";
 import { ReactComponent as MessageSvg } from "./../assets/message.svg";
+import { ReactComponent as StarSvg } from "./../assets/star.svg";
 import dropdowns from "./../dropdowns.json";
-import { COLLECTION_NAME } from "../App";
+import { COLLECTION_NAME } from "./../firebase-config";
 import { db } from "../firebase-config";
 import { doc, updateDoc } from "firebase/firestore";
 import ModalComponent from "./Modal";
@@ -54,7 +55,9 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 	if (separate !== -1) {
 		description = {
 			short: teacher.description.slice(0, separate),
-			long: teacher.description.slice(separate + 3),
+			long: isShowAllDescription
+				? teacher.description.slice(separate)
+				: teacher.description.slice(separate, separate + 200),
 		};
 	} else {
 		description = {
@@ -64,7 +67,6 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 				: teacher.description.split(" ").slice(7, 30).join(" "),
 		};
 	}
-
 
 	// TODO: Dropdowns
 	const controllers: [string, string[]][] = Object.entries(dropdowns).map(
@@ -96,14 +98,15 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 			if (isEdited) {
 				if (e) {
 					e.preventDefault();
-					e.returnValue = "There are some unsaved changes. Please save them.";
+					e.returnValue =
+						"There are some unsaved changes. Please save them.";
 				}
 				e.preventDefault();
 				e.returnValue = "There are some unsaved changes. Please save them.";
 				return "There are some unsaved changes. Please save them.";
 			}
 		});
-	}, [isEdited])
+	}, [isEdited]);
 
 	async function updateData() {
 		const docRef = doc(db, COLLECTION_NAME, doc_id);
@@ -150,6 +153,17 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 						</p>
 					</div>
 					<div className="last text-gray">
+						{teacher.rating && (
+							<div className="flex-center flex-col gap flex-auto">
+								<div className="text-flex">
+									<StarSvg fill="#fdc425" height={13} width={13} />
+									<span>{teacher.rating}</span>
+								</div>
+								<p onClick={() => openModal("n_of_reviews", "number")}>
+									{teacher.n_of_reviews} reviews
+								</p>
+							</div>
+						)}
 						{teacher.is_newly_joined && (
 							<p
 								onClick={() =>
@@ -217,7 +231,7 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 							className="text-gray mb"
 						>
 							<b className="text-dark">{description.short}</b> -{" "}
-							<span className="text-gray">
+							<span className="text-gray pre-wrap">
 								{description.long}
 								{isShowAllDescription ? " " : "... "}
 								{isShowAllDescription ? (
@@ -291,10 +305,14 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 							>
 								{isEdited ? "Save Changes" : "Saved"}
 							</button>
-							{isEdited && <button
-								onClick={() => setTeacher(teacherData)}
-								className="btn btn-secondary"
-							>Cancel</button>}
+							{isEdited && (
+								<button
+									onClick={() => setTeacher(teacherData)}
+									className="btn btn-secondary"
+								>
+									Cancel
+								</button>
+							)}
 						</div>
 					</div>
 				)}

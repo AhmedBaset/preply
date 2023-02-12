@@ -5,8 +5,9 @@ import Header from "./components/Header";
 import Teacher from "./components/Teacher";
 import { db } from "./firebase-config";
 import { TeacherType } from "./Types";
+import {COLLECTION_NAME} from "./firebase-config";
 
-export const COLLECTION_NAME = "caio_collection_1";
+
 
 function App() {
 	const [teachersLength, setTeachersLength] = useState(0);

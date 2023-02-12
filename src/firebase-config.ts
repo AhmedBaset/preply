@@ -26,3 +26,6 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firestore
 export const db = getFirestore(app);
+
+// Collection name
+export const COLLECTION_NAME = "caio_collection_1";
