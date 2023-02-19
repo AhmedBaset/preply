@@ -2,22 +2,26 @@ import React from 'react'
 
 type Props = {
    teachersLength: number;
-   editMode: boolean;
-   setEditMode: (editMode: boolean) => void;
+   editMode: boolean | "NO";
+	setEditMode?: (editMode: boolean) => void;
+	queryText?: string
 }
 
-function Header({teachersLength, editMode, setEditMode}: Props) {
+function Header({teachersLength, editMode, setEditMode, queryText}: Props) {
    return (
 		<header className="header">
 			<p>{teachersLength} English teachers available</p>
-			<label className="text-flex text-gray">
+
+			{queryText && <code className='flex-auto'>{queryText}</code>}
+
+			{editMode !== "NO" && <label className="text-flex text-gray">
 				<span>Edit Mode: </span>
 				<input
 					type="checkbox"
 					checked={editMode}
-					onChange={(e) => setEditMode(e.currentTarget.checked)}
+					onChange={(e) => setEditMode && setEditMode(e.currentTarget.checked)}
 				/>
-			</label>
+			</label>}
 		</header>
 	);
 }

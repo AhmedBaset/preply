@@ -5,7 +5,7 @@ import { ReactComponent as GraduationSvg } from "./../assets/graduation.svg";
 import { ReactComponent as UserSvg } from "./../assets/user.svg";
 import { ReactComponent as MessageSvg } from "./../assets/message.svg";
 import { ReactComponent as StarSvg } from "./../assets/star.svg";
-import dropdowns from "./../dropdowns.json";
+import settings from "./../settings.json";
 import { COLLECTION_NAME } from "./../firebase-config";
 import { db } from "../firebase-config";
 import { doc, updateDoc } from "firebase/firestore";
@@ -68,15 +68,15 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 		};
 	}
 
-	// TODO: Dropdowns
-	const controllers: [string, string[]][] = Object.entries(dropdowns).map(
-		([key, value]) => {
-			const options = Object.entries(value).map(([number, option]) => {
-				return option;
-			});
-			return [key, options];
-		}
-	);
+	// TODO: Get Dropdowns
+	const controllers: [string, string[]][] = Object.entries(
+		settings.dropdowns
+	).map(([key, value]) => {
+		const options = Object.entries(value).map(([number, option]) => {
+			return option;
+		});
+		return [key, options];
+	});
 
 	// TODO: Open Modal to edit teacher data
 	const openModal = (key: string, type: string = "text") => {
@@ -159,8 +159,12 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 									<StarSvg fill="#fdc425" height={13} width={13} />
 									<span className="text-xl">{teacher.rating}</span>
 								</div>
-								<p className="text-flex" onClick={() => openModal("n_of_reviews", "number")}>
-									<span>{teacher.n_of_reviews}</span><span>reviews</span>
+								<p
+									className="text-flex"
+									onClick={() => openModal("n_of_reviews", "number")}
+								>
+									<span>{teacher.n_of_reviews}</span>
+									<span>reviews</span>
 								</p>
 							</div>
 						)}
@@ -251,14 +255,24 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 						</p>
 					</div>
 					<div className="last buttons">
-						<button className="btn btn-primary">Book trail lesson</button>
-						<button className="btn btn-secondary flex-center">
+						<a
+							href={settings.buttons_links.book_lesson}
+							title="Book trail lesson"
+							className="btn btn-primary"
+						>
+							Book trail lesson
+						</a>
+						<a
+							href={settings.buttons_links.message}
+							title="Message"
+							className="btn btn-secondary flex-center"
+						>
 							<MessageSvg
 								className="icon"
 								style={{ width: 20, height: 20, fontSize: 20 }}
 							/>
 							<span className="text">Message</span>
-						</button>
+						</a>
 					</div>
 				</div>
 

@@ -8,14 +8,9 @@ type Props = {
 
 function Footer({ teachersLength, currentPage, setCurrentPage }: Props) {
 	const [pagesCount, setPagesCount] = useState(0);
-	const [pages, setPages] = useState<number[]>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
 	useEffect(() => {
 		setPagesCount(Math.ceil(teachersLength / 10));
-
-		for (let i = 1; i <= pagesCount; i++) {
-			setPages((prev) => [...prev, i]);
-		}
 	}, [teachersLength]);
 
    const previousListItems = [];
