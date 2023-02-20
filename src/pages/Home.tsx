@@ -24,11 +24,11 @@ function Home({ teachersLength, currentPage, setCurrentPage, loading, error, tea
 					<p
 						style={{
 							color: "#2f2201",
-							backgroundColor: "#f5b2092d",
+							backgroundColor: "#f9d8862d",
 							padding: 16,
 							marginBlock: 16,
 							borderRadius: 10,
-							border: "1px dashed #2f2201"
+							border: "1px dashed #2f2201",
 						}}
 					>
 						Loading...

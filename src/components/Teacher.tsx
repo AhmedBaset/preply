@@ -8,7 +8,7 @@ import { ReactComponent as StarSvg } from "./../assets/star.svg";
 import settings from "./../settings.json";
 import { COLLECTION_NAME } from "./../firebase-config";
 import { db } from "../firebase-config";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import ModalComponent from "./Modal";
 
 type Props = {
@@ -90,28 +90,28 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [teacherStringfied]);
 
-	// TODO: Prevent from closing the page without saving
-	// Uncomment this code to prevent from closing the page without saving
-	React.useEffect(() => {
-		window.addEventListener("beforeunload", (e) => {
-			e = e || window.event;
-			if (isEdited) {
-				if (e) {
-					e.preventDefault();
-					e.returnValue =
-						"There are some unsaved changes. Please save them.";
-				}
-				e.preventDefault();
-				e.returnValue = "There are some unsaved changes. Please save them.";
-				return "There are some unsaved changes. Please save them.";
-			}
-		});
-	}, [isEdited]);
+	// // TODO: Prevent from closing the page without saving
+	// // Uncomment this code to prevent from closing the page without saving
+	// React.useEffect(() => {
+	// 	window.addEventListener("beforeunload", (e) => {
+	// 		e = e || window.event;
+	// 		if (isEdited) {
+	// 			if (e) {
+	// 				e.preventDefault();
+	// 				e.returnValue =
+	// 					"There are some unsaved changes. Please save them.";
+	// 			}
+	// 			e.preventDefault();
+	// 			e.returnValue = "There are some unsaved changes. Please save them.";
+	// 			return "There are some unsaved changes. Please save them.";
+	// 		}
+	// 	});
+	// }, [isEdited]);
 
 	async function updateData() {
 		const docRef = doc(db, COLLECTION_NAME, doc_id);
 		try {
-			await updateDoc(docRef, teacher);
+			await updateDoc(docRef, {...teacher, update_time: serverTimestamp()});
 		} catch (error: any) {
 			setError?.(error.message);
 		}

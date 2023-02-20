@@ -1,3 +1,9 @@
+import {
+	QueryFieldFilterConstraint,
+	QueryOrderByConstraint,
+	Timestamp,
+} from "firebase/firestore";
+
 export type TeacherType = {
 	tutor_id: string;
 	tutor_name: string;
@@ -17,4 +23,17 @@ export type TeacherType = {
 	gender?: string;
 	rating?: string;
 	ethnicity?: string;
+
+	update_time: Timestamp;
+	create_time?: Timestamp;
 };
+
+// export type QueriesProps = (
+// 	| QueryFieldFilterConstraint
+// 	| QueryOrderByConstraint
+// )[];
+
+export type QueriesProps = {
+	field: keyof TeacherType;
+	value: string[];
+}[];
