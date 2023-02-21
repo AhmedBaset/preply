@@ -1,21 +1,29 @@
-import React from 'react'
-import { COLLECTION_NAME } from '../firebase-config';
+import React from "react";
+import { COLLECTION_NAME } from "../firebase-config";
 
 type Props = {
-   teachersLength: number;
-   editMode: boolean | "NO";
+	teachersLength: number;
+	editMode: boolean | "NO";
 	setEditMode?: (editMode: boolean) => void;
 	queryText?: string;
-	isQueryCode?: boolean
-}
+	isQueryCode?: boolean;
+};
 
-function Header({teachersLength, editMode, setEditMode, queryText, isQueryCode}: Props) {
-   return (
+function Header({
+	teachersLength,
+	editMode,
+	setEditMode,
+	queryText,
+	isQueryCode,
+}: Props) {
+	return (
 		<header className="header">
 			<p>{teachersLength} English teachers available</p>
 
 			{isQueryCode && (
-				<code className="flex-auto">{`query(collection("${COLLECTION_NAME}")${queryText && `, ${queryText}`})`}</code>
+				<code className="flex-auto">{`query(collection("${COLLECTION_NAME}")${
+					queryText && `, ${queryText}`
+				})`}</code>
 			)}
 
 			{editMode !== "NO" && (
@@ -34,4 +42,4 @@ function Header({teachersLength, editMode, setEditMode, queryText, isQueryCode}:
 	);
 }
 
-export default Header
+export default Header;

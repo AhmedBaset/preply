@@ -18,8 +18,9 @@ export default function useLocalStorage<T>(key: string, initialValue: T) {
 		try {
 			window.localStorage.setItem(key, JSON.stringify(storedValue));
 		} catch (error) {
-			console.warn(error)
+			console.warn(error);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [JSON.stringify(storedValue)]);
 
 	return [storedValue, setStoredValue] as const;

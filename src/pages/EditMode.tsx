@@ -36,7 +36,7 @@ function EditMode({
 	setOrderMethod,
 	dataFromFireStore,
 	queries,
-	getData
+	getData,
 }: Props) {
 	const [editMode, setEditMode] = useState(false);
 

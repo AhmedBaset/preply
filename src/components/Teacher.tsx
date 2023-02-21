@@ -93,7 +93,10 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 	async function updateData() {
 		const docRef = doc(db, COLLECTION_NAME, doc_id);
 		try {
-			await updateDoc(docRef, { ...teacher, update_time: serverTimestamp() });
+			await updateDoc(docRef, {
+				...teacher,
+				update_time: serverTimestamp(),
+			});
 		} catch (error: any) {
 			setError?.(error.message);
 		}

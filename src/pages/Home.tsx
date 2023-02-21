@@ -37,11 +37,12 @@ function Home({
 				if (snapshot.exists()) {
 					setQueries(snapshot.data().queries);
 					setOrderMethod(snapshot.data().orderMethod);
-				} 
+				}
 			} catch (error: any) {
 				setError(error.message);
 			}
 		})();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (

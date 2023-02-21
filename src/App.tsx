@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db, COLLECTION_NAME } from "./firebase-config";
 import { OrderMethodType, QueriesProps, TeacherType } from "./Types";
 
@@ -33,7 +33,10 @@ function App() {
 	// TODO: Get data from firestore
 
 	const getData = async () => {
-		const q = query(collection(db, COLLECTION_NAME), orderBy(orderMethod, orderMethod === "update_time" ? "desc" : "asc"));
+		const q = query(
+			collection(db, COLLECTION_NAME),
+			orderBy(orderMethod, orderMethod === "update_time" ? "desc" : "asc")
+		);
 
 		//* If you want to limit the number of data from firestore. But In this case you can't knew the number of documents in the collection and the number of pages.
 		// const q = query(
@@ -88,10 +91,11 @@ function App() {
 
 		setFilteredData(data);
 		// setFilteredData(sortArray(data, orderMethod));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [queriesAsString, dataFromFirestoreAsString]);
 
 	useEffect(() => {
-		setQueriesCode(`orderBy("${orderMethod}", "desc")`)
+		setQueriesCode(`orderBy("${orderMethod}", "desc")`);
 	}, [orderMethod]);
 
 	// TODO: Set teachers based on current page
