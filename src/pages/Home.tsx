@@ -1,20 +1,49 @@
-import React from "react";
+import { doc, getDoc } from "firebase/firestore";
+import React, { useEffect } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Teacher from "../components/Teacher";
-import { TeacherType } from "../Types";
+import { db } from "../firebase-config";
+import { OrderMethodType, QueriesProps, TeacherType } from "../Types";
 
 type Props = {
-   teachersLength: number;
-   currentPage: number;
-   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
-   loading: boolean;
-   error: string;
-   teachers: { data: TeacherType; doc_id: string }[];
-   setError: React.Dispatch<React.SetStateAction<string>>;
+	teachersLength: number;
+	currentPage: number;
+	setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+	loading: boolean;
+	teachers: { data: TeacherType; doc_id: string }[];
+	setError: React.Dispatch<React.SetStateAction<string>>;
+	setQueries: React.Dispatch<React.SetStateAction<QueriesProps>>;
+	setOrderMethod: React.Dispatch<React.SetStateAction<OrderMethodType>>;
 };
 
-function Home({ teachersLength, currentPage, setCurrentPage, loading, error, teachers, setError }: Props) {
+function Home({
+	teachersLength,
+	currentPage,
+	setCurrentPage,
+	loading,
+	teachers,
+	setError,
+	setQueries,
+	setOrderMethod,
+}: Props) {
+	useEffect(() => {
+		(async () => {
+			const docRef = doc(db, "settings", "deployed_settings");
+
+			try {
+				const snapshot = await getDoc(docRef);
+
+				if (snapshot.exists()) {
+					setQueries(snapshot.data().queries);
+					setOrderMethod(snapshot.data().orderMethod);
+				} 
+			} catch (error: any) {
+				setError(error.message);
+			}
+		})();
+	}, []);
+
 	return (
 		<>
 			<Header teachersLength={teachersLength} editMode="NO" />

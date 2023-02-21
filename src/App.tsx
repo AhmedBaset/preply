@@ -1,13 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import {
-	collection,
-	getDocs,
-	query,
-	where,
-} from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db, COLLECTION_NAME } from "./firebase-config";
-import { QueriesProps, TeacherType } from "./Types";
+import { OrderMethodType, QueriesProps, TeacherType } from "./Types";
 
 const Home = React.lazy(() => import("./pages/Home"));
 const EditMode = React.lazy(() => import("./pages/EditMode"));
@@ -30,52 +25,49 @@ function App() {
 	const [error, setError] = useState("");
 	const [queries, setQueries] = useState<QueriesProps>([]);
 	const [queriesCode, setQueriesCode] = useState("");
-	const [orderMethod, setOrderMethod] = useState("tutor_id");
-
+	const [orderMethod, setOrderMethod] = useState<OrderMethodType>("tutor_id");
 
 	const queriesAsString = JSON.stringify(queries);
-	const dataFromFirestoreAsString = JSON.stringify(
-		dataFromFirestore.map((doc) => doc.data.tutor_id)
-	);
+	const dataFromFirestoreAsString = JSON.stringify(dataFromFirestore);
 
 	// TODO: Get data from firestore
+
+	const getData = async () => {
+		const q = query(collection(db, COLLECTION_NAME), orderBy(orderMethod, "asc"));
+
+		//* If you want to limit the number of data from firestore. But In this case you can't knew the number of documents in the collection and the number of pages.
+		// const q = query(
+		//   collection(db, COLLECTION_NAME),
+		//   limit(numberOfDataFromFirestore)
+		// );
+
+		try {
+			const snapshot = await getDocs(q);
+
+			const docs: { data: TeacherType; doc_id: string }[] = [];
+			snapshot.docs.forEach((doc) => {
+				docs.push({ data: doc.data() as TeacherType, doc_id: doc.id });
+			});
+
+			setDataFromFirestore(docs);
+			setLoading(false);
+		} catch (error: any) {
+			setError(error.message);
+			setLoading(false);
+		}
+	};
 	useLayoutEffect(() => {
-		(async () => {
-			const q = query(collection(db, COLLECTION_NAME));
-
-			//* If you want to limit the number of data from firestore. But In this case you can't knew the number of documents in the collection and the number of pages.
-			// const q = query(
-			//   collection(db, COLLECTION_NAME),
-			//   limit(numberOfDataFromFirestore)
-			// );
-
-			try {
-				const snapshot = await getDocs(q);
-
-				const docs: { data: TeacherType; doc_id: string }[] = [];
-				snapshot.docs.forEach((doc) => {
-					docs.push({ data: doc.data() as TeacherType, doc_id: doc.id });
-				});
-
-				setDataFromFirestore(docs);
-				setLoading(false);
-			} catch (error: any) {
-				setError(error.message);
-				setLoading(false);
-			}
-		})();
+		getData();
 
 		// }, [numberOfDataFromFirestore]);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [queriesAsString]);
+	}, [queriesAsString, orderMethod]);
 
 	// TODO: Filter data
 	useEffect(() => {
 		const data: { data: TeacherType; doc_id: string }[] = [];
 		dataFromFirestore.forEach((doc) => {
-			let isMatch = false;
 			let matched = 0;
-
 			queries.forEach((query) => {
 				query.value.forEach((value) => {
 					if (value === "None") {
@@ -94,14 +86,18 @@ function App() {
 			if (matched === queries.length) data.push(doc);
 		});
 
-		setFilteredData(sortArray(data, orderMethod));
-	}, [queriesAsString, dataFromFirestoreAsString, orderMethod]);
+		setFilteredData(data);
+		// setFilteredData(sortArray(data, orderMethod));
+	}, [queriesAsString, dataFromFirestoreAsString]);
+
+	console.log(filteredData);
+	useEffect(() => {
+		setQueriesCode(`orderBy("${orderMethod}", "desc")`)
+	}, [orderMethod]);
 
 	// TODO: Set teachers based on current page
 	useEffect(() => {
-		setTeachers(
-			filteredData.slice((currentPage - 1) * 10, currentPage * 10)
-		);
+		setTeachers(filteredData.slice((currentPage - 1) * 10, currentPage * 10));
 		setTeachersLength(filteredData.length);
 		window.scrollTo({ top: 0, behavior: "smooth" });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -147,7 +143,8 @@ function App() {
 							teachers={teachers}
 							setError={setError}
 							loading={loading}
-							error={error}
+							setQueries={setQueries}
+							setOrderMethod={setOrderMethod}
 						/>
 					}
 				/>
@@ -163,10 +160,12 @@ function App() {
 							loading={loading}
 							setQueries={setQueries}
 							queriesCode={queriesCode}
+							queries={queries}
 							setQueriesCode={setQueriesCode}
 							orderMethod={orderMethod}
 							setOrderMethod={setOrderMethod}
 							dataFromFireStore={dataFromFirestore}
+							getData={getData}
 						/>
 					}
 				/>
@@ -177,30 +176,35 @@ function App() {
 
 export default App;
 
-function sortArray(array: any[], orderMethod: string) {
-	const sortedArray = [...array].sort((a, b) => {
-		const firstField =
-			orderMethod === "tutor_id"
-				? parseInt(a.data[orderMethod])
-				: orderMethod === "updata_time"
-				? new Date(a.data.update_time.seconds * 1000)
-				: orderMethod === "create_time"
-				? new Date(a.data.create_time.seconds * 1000)
-				: a.data[orderMethod];
-		const secondField =
-			orderMethod === "tutor_id"
-				? parseInt(b.data[orderMethod])
-				: orderMethod === "updata_time"
-				? new Date(b.data.update_time.seconds * 1000)
-				: orderMethod === "create_time"
-				? new Date(b.data.create_time.seconds * 1000)
-				: b.data[orderMethod];
-
-		if (firstField > secondField) return 1;
-		if (firstField < secondField) return -1;
-		return 0;
-	});
-
-	console.log(sortedArray.map((doc) => doc.data[orderMethod]));
-	return sortedArray;
-}
+// function sortArray(
+// 	array: { data: TeacherType; doc_id: string }[],
+// 	orderMethod: OrderMethodType
+// ) {
+// 	const sortedArray: { data: TeacherType; doc_id: string }[] = [...array].sort(
+// 		(a, b) => {
+// 			if (orderMethod === ("updata_time" as OrderMethodType)) {
+// 				if (a.data.update_time?.toJSON() > b.data.update_time?.toJSON())
+// 					return 1;
+// 				if (a.data.update_time?.toJSON() < b.data.update_time?.toJSON())
+// 					return -1;
+// 				return 0;
+// 			} else if (orderMethod === "create_time") {
+// 				if (a.data.create_time?.toJSON() > b.data.create_time?.toJSON())
+// 					return 1;
+// 				if (a.data.create_time?.toJSON() < b.data.create_time?.toJSON())
+// 					return -1;
+// 				return 0;
+// 			} else if (orderMethod === "tutor_id") {
+// 				if (a.doc_id > b.doc_id) return 1;
+// 				if (a.doc_id < b.doc_id) return -1;
+// 				return 0;
+// 			} else {
+// 				if (a.data[orderMethod] > b.data[orderMethod]) return 1;
+// 				if (a.data[orderMethod] < b.data[orderMethod]) return -1;
+// 				return 0;
+// 			}
+// 		}
+// 	);
+// 	console.log(sortedArray.map((doc) => doc.data[orderMethod]));
+// 	return sortedArray;
+// }

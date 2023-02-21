@@ -3,7 +3,7 @@ import Filters from "../components/Filters";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Teacher from "../components/Teacher";
-import { QueriesProps, TeacherType } from "../Types";
+import { OrderMethodType, QueriesProps, TeacherType } from "../Types";
 
 type Props = {
 	teachersLength: number;
@@ -15,9 +15,11 @@ type Props = {
 	setQueries: React.Dispatch<React.SetStateAction<QueriesProps>>;
 	queriesCode: string;
 	setQueriesCode: React.Dispatch<React.SetStateAction<string>>;
-	orderMethod: string;
-	setOrderMethod: React.Dispatch<React.SetStateAction<string>>;
+	orderMethod: OrderMethodType;
+	setOrderMethod: React.Dispatch<React.SetStateAction<OrderMethodType>>;
 	dataFromFireStore: { data: TeacherType; doc_id: string }[];
+	queries: QueriesProps;
+	getData: () => void;
 };
 
 function EditMode({
@@ -33,6 +35,8 @@ function EditMode({
 	orderMethod,
 	setOrderMethod,
 	dataFromFireStore,
+	queries,
+	getData
 }: Props) {
 	const [editMode, setEditMode] = useState(false);
 
@@ -42,7 +46,9 @@ function EditMode({
 				setQueries={setQueries}
 				setQueriesCode={setQueriesCode}
 				setOrderMethod={setOrderMethod}
+				queries={queries}
 				orderMethod={orderMethod}
+				getData={getData}
 			/>
 
 			<Header

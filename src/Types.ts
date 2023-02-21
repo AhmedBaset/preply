@@ -24,8 +24,8 @@ export type TeacherType = {
 	rating?: string;
 	ethnicity?: string;
 
-	update_time: Timestamp;
-	create_time?: Timestamp;
+	update_time: Date;
+	create_time: Date;
 };
 
 // export type QueriesProps = (
@@ -35,5 +35,7 @@ export type TeacherType = {
 
 export type QueriesProps = {
 	field: keyof TeacherType;
-	value: string[];
-}[];
+	value: (string)[];
+}[]
+
+export type OrderMethodType = "tutor_id" | "tutor_name" | "create_time" | "update_time"
