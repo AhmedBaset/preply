@@ -59,7 +59,7 @@ function Filters({
 	// TODO: Get Filters from LocalStorage
 	const [filtersSelected, setFiltersSelected] = useLocalStorage<FiltersProps>(
 		"filtersSelected",
-		UNSELLECTED_ALL
+		SELLECTED_ALL
 	);
 	const [orderMethodSelected, setOrderMethodSelected] = useLocalStorage<OrderMethodType>("orderMethod", orderMethod)
 

@@ -33,7 +33,7 @@ function App() {
 	// TODO: Get data from firestore
 
 	const getData = async () => {
-		const q = query(collection(db, COLLECTION_NAME), orderBy(orderMethod, "asc"));
+		const q = query(collection(db, COLLECTION_NAME), orderBy(orderMethod, orderMethod === "update_time" ? "desc" : "asc"));
 
 		//* If you want to limit the number of data from firestore. But In this case you can't knew the number of documents in the collection and the number of pages.
 		// const q = query(
@@ -90,7 +90,6 @@ function App() {
 		// setFilteredData(sortArray(data, orderMethod));
 	}, [queriesAsString, dataFromFirestoreAsString]);
 
-	console.log(filteredData);
 	useEffect(() => {
 		setQueriesCode(`orderBy("${orderMethod}", "desc")`)
 	}, [orderMethod]);
