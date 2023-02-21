@@ -1,0 +1,62 @@
+[debug] [2023-02-21T18:45:20.054Z] ----------------------------------------------------------------------
+[debug] [2023-02-21T18:45:20.057Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Dr\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2023-02-21T18:45:20.058Z] CLI Version:   11.23.1
+[debug] [2023-02-21T18:45:20.058Z] Platform:      win32
+[debug] [2023-02-21T18:45:20.058Z] Node Version:  v18.14.1
+[debug] [2023-02-21T18:45:20.059Z] Time:          Tue Feb 21 2023 20:45:20 GMT+0200 (Eastern European Standard Time)
+[debug] [2023-02-21T18:45:20.059Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-02-21T18:45:20.149Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-02-21T18:45:20.149Z] > authorizing via signed-in user (a7med3bdulbaset@gmail.com)
+[debug] [2023-02-21T18:45:20.149Z] [iam] checking project view-preply-1 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2023-02-21T18:45:20.152Z] > refreshing access token with scopes: []
+[debug] [2023-02-21T18:45:20.154Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2023-02-21T18:45:20.154Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2023-02-21T18:45:20.671Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2023-02-21T18:45:20.672Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2023-02-21T18:45:20.693Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/view-preply-1:testIamPermissions [none]
+[debug] [2023-02-21T18:45:20.693Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/view-preply-1:testIamPermissions x-goog-quota-user=projects/view-preply-1
+[debug] [2023-02-21T18:45:20.694Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/view-preply-1:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-02-21T18:45:21.949Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/view-preply-1:testIamPermissions 200
+[debug] [2023-02-21T18:45:21.949Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/view-preply-1:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-02-21T18:45:21.953Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/view-preply-1 [none]
+[debug] [2023-02-21T18:45:22.841Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/view-preply-1 200
+[debug] [2023-02-21T18:45:22.842Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/view-preply-1 {"projectId":"view-preply-1","projectNumber":"1008696431940","displayName":"View Preply 1","name":"projects/view-preply-1","resources":{"hostingSite":"view-preply-1","storageBucket":"view-preply-1.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_db214ed8-e762-4d60-9890-21902c3c6e9d"}
+[info] 
+[info] === Deploying to 'view-preply-1'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2023-02-21T18:45:22.852Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/view-preply-1/versions [none]
+[debug] [2023-02-21T18:45:22.852Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/view-preply-1/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2023-02-21T18:45:24.519Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/view-preply-1/versions 200
+[debug] [2023-02-21T18:45:24.519Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/view-preply-1/versions {"name":"projects/1008696431940/sites/view-preply-1/versions/cc5932f1ea295d5d","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[view-preply-1]: beginning deploy... 
+[info] i  hosting[view-preply-1]: found 26 files in build 
+[debug] [2023-02-21T18:45:24.544Z] [hosting] uploading with 200 concurrency
+[debug] [2023-02-21T18:45:24.557Z] [hosting] hash cache [YnVpbGQ] stored for 26 files
+[debug] [2023-02-21T18:45:24.557Z] [hosting][hash queue][FINAL] {"max":4,"min":1,"avg":1,"active":0,"complete":26,"success":26,"errored":0,"retried":0,"total":26,"elapsed":6}
+[debug] [2023-02-21T18:45:24.558Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/1008696431940/sites/view-preply-1/versions/cc5932f1ea295d5d:populateFiles [none]
+[debug] [2023-02-21T18:45:24.558Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/1008696431940/sites/view-preply-1/versions/cc5932f1ea295d5d:populateFiles {"files":{"/404.html":"daa499dd96d8229e73235345702ba32f0793f0c8e5c0d30e40e37a5872be57aa","/asset-manifest.json":"3ecf066326aa0c1cf9d2f810cda6819a537a8f8bc47969497895f6a8825634c8","/favicon.ico":"69258377073dde1787fa2719ddef96c3e9c95de61f03cf7ae7880cbff7ceaedb","/index.html":"5e6b30051a8d70c87aea92f4b21860887be808d78bceda033e654507e22d1bb7","/logo192.png":"3ee59515172ee198f3be375979df15ac5345183e656720a381b8872b2a39dc8b","/logo512.png":"ee7e2f3fdb8209c4b6fd7bef6ba50d1b9dba30a25bb5c3126df057e1cb6f5331","/manifest.json":"5c997de1364b8be939319fa9209abd77f2caf7f8844999a9e2e9173f844e7840","/robots.txt":"b2090cf9761ef60aa06e4fab97679bd43dfa5e5df073701ead5879d7c68f1ec5","/static/css/main.d07fa352.css":"8752b436a3382755805ff1905a5a81c86f1aeba3a1594088035e7a8930b3ebe8","/static/css/main.d07fa352.css.map":"337d5ed09fcbd93b886a9c94b8059777ebedfe5a255307918c1ba2d7913226fd","/static/js/111.a18ead5b.chunk.js":"5abe23fa124d512a9c311c5dd0ff029a9d648f1692950671a071087b906a4ead","/static/js/111.a18ead5b.chunk.js.map":"b36899d4156068e450d4c78e62b964fbb1996739b806ca38a713e311ffed9a92","/static/js/293.86392ac7.chunk.js":"35d669610fed3e2d430e9c95f5ed259fc1e1caf07f6ea79a4c336b6aa0bbef45","/static/js/293.86392ac7.chunk.js.map":"7ab1d4d0002a0fa43f555513d237359ddfaaa76680c4ca5bfb244188778b6af2","/static/js/764.0b27f8f4.chunk.js":"40352d639ce53631c2027f9c57a8b78002aae744134712052a60979ca1e4e97d","/static/js/764.0b27f8f4.chunk.js.map":"c332eb85eba1467d50e5cbec571bfb126603d37b8c7ec512c44ae81f0602da6c","/static/js/787.39d3578f.chunk.js":"fffdd32b2678489e8127898f81bd483da58609c996325d46cd7a290336a3103d","/static/js/787.39d3578f.chunk.js.map":"adf6e67d556e82af8e36e16156f3a881f1763e5ebd0a9f915ca5df985612ba30","/static/js/main.bf38b7a3.js":"affdaa9717ca92085bd45ee9bd03292101b026f65fbee8f4895efb18e1b51d66","/static/js/main.bf38b7a3.js.LICENSE.txt":"ea3bb554b16a29260e7d39301f794bc74824bb67672420ab60287424e57a2eb5","/static/js/main.bf38b7a3.js.map":"2f7befd90d75a5c2934225c27905c66335e582d598a5bbbc941dd13da8c72e7f","/static/media/flags.e40fbca868d3568f1b57.woff2":"3076cd78705876b35dabeabe1e25d5843e5bfc4f756105b4169d1be71e2e48bf","/static/media/graduation.29009b519e753f0086f205198ca9e652.svg":"c284f9bb63d2722a1757e4af573a5d7af1bec8f7bc0b6a900def818d602e965a","/static/media/message.e50840a187f9db410884a4db5653b2d2.svg":"4bc7f8eadbc244b84b73a3b8b0de1fff0ac9cd0a8fa6461bbefeed2dfaee5aca","/static/media/star.f824d2a66add51c1e1027ca1c2d0f772.svg":"5905c35d9b3cbbe3667106cc77fd61b143a4a7edc0b70869c53fab168e2edc01","/static/media/user.dba0b72a13a1df4d4b6b8989cee174b9.svg":"339fb2a8da8edb6c7d676ae67304e7ce6a8dc728864a7fb4c33f28e7e5222199"}}
+[debug] [2023-02-21T18:46:19.146Z] ----------------------------------------------------------------------
+[debug] [2023-02-21T18:46:19.150Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Dr\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2023-02-21T18:46:19.152Z] CLI Version:   11.23.1
+[debug] [2023-02-21T18:46:19.152Z] Platform:      win32
+[debug] [2023-02-21T18:46:19.152Z] Node Version:  v18.14.1
+[debug] [2023-02-21T18:46:19.154Z] Time:          Tue Feb 21 2023 20:46:19 GMT+0200 (Eastern European Standard Time)
+[debug] [2023-02-21T18:46:19.154Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-02-21T18:46:19.246Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-02-21T18:46:19.246Z] > authorizing via signed-in user (a7med3bdulbaset@gmail.com)
+[debug] [2023-02-21T18:46:19.246Z] [iam] checking project view-preply-1 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2023-02-21T18:46:19.249Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/view-preply-1:testIamPermissions [none]
+[debug] [2023-02-21T18:46:19.250Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/view-preply-1:testIamPermissions x-goog-quota-user=projects/view-preply-1
+[debug] [2023-02-21T18:46:19.250Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/view-preply-1:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-02-21T18:46:40.363Z] [iam] error while checking permissions, command may fail: FirebaseError: Failed to make request to https://cloudresourcemanager.googleapis.com/v1/projects/view-preply-1:testIamPermissions
+[debug] [2023-02-21T18:46:40.375Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/view-preply-1 [none]
+[debug] [2023-02-21T18:47:01.471Z] Failed to make request to https://firebase.googleapis.com/v1beta1/projects/view-preply-1
+[debug] [2023-02-21T18:47:06.488Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\Dr\AppData\Roaming\npm\node_modules\firebase-tools\lib\utils.js:253:49)
+    at listOnTimeout (node:internal/timers:569:17)
+    at process.processTimers (node:internal/timers:512:7)
+[error] 
+[error] Error: An unexpected error has occurred.

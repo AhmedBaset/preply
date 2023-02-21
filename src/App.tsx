@@ -95,7 +95,11 @@ function App() {
 	}, [queriesAsString, dataFromFirestoreAsString]);
 
 	useEffect(() => {
-		setQueriesCode(`orderBy("${orderMethod}", "desc")`);
+		setQueriesCode(
+			`orderBy("${orderMethod}", "${
+				orderMethod === "update_time" ? "desc" : "asc"
+			}")`
+		);
 	}, [orderMethod]);
 
 	// TODO: Set teachers based on current page
