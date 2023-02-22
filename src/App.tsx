@@ -35,7 +35,7 @@ function App() {
 	const getData = async () => {
 		const q = query(
 			collection(db, COLLECTION_NAME),
-			orderBy(orderMethod, orderMethod === "update_time" ? "desc" : "asc")
+			orderBy(orderMethod, orderMethod === "update_time" || orderMethod === "create_time" ? "desc" : "asc")
 		);
 
 		setLoading(true)
