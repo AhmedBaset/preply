@@ -38,6 +38,8 @@ function App() {
 			orderBy(orderMethod, orderMethod === "update_time" ? "desc" : "asc")
 		);
 
+		setLoading(true)
+
 		//* If you want to limit the number of data from firestore. But In this case you can't knew the number of documents in the collection and the number of pages.
 		// const q = query(
 		//   collection(db, COLLECTION_NAME),
