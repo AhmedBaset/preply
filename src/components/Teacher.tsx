@@ -27,6 +27,7 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 		type: string;
 	}>(null);
 	const [isEdited, setIsEdited] = React.useState(false);
+	const [isLoading, setIsLoading] = React.useState(false);
 
 	// TODO: Convert languages from string to array
 	const languagesArray = teacher.languages
@@ -91,6 +92,7 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 	}, [teacherStringfied]);
 
 	async function updateData() {
+		setIsLoading(true);
 		const docRef = doc(db, COLLECTION_NAME, doc_id);
 		try {
 			await updateDoc(docRef, {
@@ -101,6 +103,7 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 			setError?.(error.message);
 		}
 		setIsEdited(false);
+		setIsLoading(false);
 	}
 
 	return (
@@ -300,7 +303,11 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 								onClick={() => isEdited && updateData()}
 								className="btn btn-primary"
 							>
-								{isEdited ? "Save Changes" : "Saved"}
+								{isEdited
+									? isLoading
+										? "Saving..."
+										: "Save"
+									: "Saved"}
 							</button>
 							{isEdited && (
 								<button

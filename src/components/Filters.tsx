@@ -42,12 +42,6 @@ type Props = {
 	getData: () => void;
 };
 
-async function updateDeployedSettings(settings: any, orderMethod: string) {
-	const docRef = doc(db, "settings", "deployed_settings");
-
-	await setDoc(docRef, { queries: settings, orderMethod });
-}
-
 function Filters({
 	setQueries,
 	setQueriesCode,
@@ -64,6 +58,7 @@ function Filters({
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [orderMethodSelected, setOrderMethodSelected] =
 		useLocalStorage<OrderMethodType>("orderMethod", orderMethod);
+	const [isLoading, setIsLoading] = React.useState(false);
 
 	useEffect(() => {
 		setQueries(() =>
@@ -86,6 +81,14 @@ function Filters({
 		// });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [JSON.stringify(filtersSelected)]);
+
+	async function updateDeployedSettings(settings: any, orderMethod: string) {
+		setIsLoading(true);
+		const docRef = doc(db, "settings", "deployed_settings");
+
+		await setDoc(docRef, { queries: settings, orderMethod });
+		setIsLoading(false);
+	}
 
 	return (
 		<div className="filters">
@@ -145,7 +148,7 @@ function Filters({
 							updateDeployedSettings(queries, orderMethod);
 						}}
 					>
-						Deploy Settings
+						{isLoading ? "Deploying settings" : "Deploy settings"}
 					</button>
 				</div>
 			</div>
