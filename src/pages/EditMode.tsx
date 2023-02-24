@@ -3,6 +3,7 @@ import Filters from "../components/Filters";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Teacher from "../components/Teacher";
+import useLocalStorage from "../hooks/useLocalStorage";
 import { OrderMethodType, QueriesProps, TeacherType } from "../Types";
 
 type Props = {
@@ -38,7 +39,15 @@ function EditMode({
 	queries,
 	getData,
 }: Props) {
-	const [editMode, setEditMode] = useState(false);
+	const [storage, setStorage] = useLocalStorage<{ isEditMode: boolean }>(
+		"editMode",
+		{ isEditMode: false }
+	);
+	const [editMode, setEditMode] = useState(storage.isEditMode);
+
+	React.useEffect(() => {
+		setStorage({isEditMode: editMode})
+	}, [editMode])
 
 	return (
 		<>

@@ -393,6 +393,31 @@ footer {
 	}
 }
 
+// Saved Fliters 
+.saved-filters {
+	flex: 1 500px;
+	width: min(100%, 500px);
+	max-height: 500px;
+	overflow-y: auto;
+
+	form {
+		height: 50px;
+		border: 1px solid var(--clr-primary);
+		border-radius: 1vmin;
+		overflow: hidden;
+
+		& > * {
+			height: 100%;
+			border: 0;
+			border-radius: 0;
+		}
+	}
+
+	.item {
+		
+	}
+}
+
 // Components and utilities
 .btn {
 	padding: 0.75rem 1rem;

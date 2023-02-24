@@ -4,6 +4,7 @@ import { db } from "../firebase-config";
 import useLocalStorage from "../hooks/useLocalStorage";
 import settings from "../settings.json";
 import { OrderMethodType, QueriesProps } from "../Types";
+import SavedFilters from "./SavedFilters";
 
 type FiltersProps = {
 	// set the key to be the key of the dropdowns in settings.json and the value to be the value of the dropdowns in settings.json
@@ -29,9 +30,6 @@ const UNSELLECTED_ALL = controllers.reduce((acc, [key]) => {
 	acc[key as keyof FiltersProps] = [];
 	return acc;
 }, {} as FiltersProps);
-
-const FIRST_SETTINGS =
-	JSON.parse(window.localStorage.getItem("filtersSelected")!) || SELLECTED_ALL;
 
 type Props = {
 	setQueries: React.Dispatch<React.SetStateAction<QueriesProps>>;
@@ -105,12 +103,6 @@ function Filters({
 						onClick={() => setFiltersSelected(UNSELLECTED_ALL)}
 					>
 						Unsellect all
-					</button>
-					<button
-						className="btn btn-secondary"
-						onClick={() => setFiltersSelected(FIRST_SETTINGS)}
-					>
-						Clear all
 					</button>
 				</div>
 				<div className="flex flex-end gap">
@@ -186,6 +178,13 @@ function Filters({
 						))}
 					</div>
 				))}
+
+				<SavedFilters
+					queries={queries}
+					setQueries={setQueries}
+					orderMethod={orderMethod}
+					setOrderMethod={setOrderMethod}
+				/>
 			</div>
 		</div>
 	);

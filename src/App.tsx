@@ -70,6 +70,11 @@ function App() {
 
 	// TODO: Filter data
 	useEffect(() => {
+		if (queries.length === 0) {
+			setFilteredData([])
+			return
+		}
+
 		const data: { data: TeacherType; doc_id: string }[] = [];
 		dataFromFirestore.forEach((doc) => {
 			let matched = 0;
@@ -91,7 +96,19 @@ function App() {
 			if (matched === queries.length) data.push(doc);
 		});
 
-		setFilteredData(data);
+		if (orderMethod === 'tutor_id') {
+			setFilteredData(data.sort(() => { 
+				const random = Math.random()
+				if (random > 0.5) return 1
+				if (random < 0.5) return -1
+				return 0
+			}
+			))
+		} else { 
+			setFilteredData(data);
+		}
+
+
 		// setFilteredData(sortArray(data, orderMethod));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [queriesAsString, dataFromFirestoreAsString]);
