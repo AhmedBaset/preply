@@ -6,7 +6,7 @@ import settings from "../settings.json";
 import { OrderMethodType, QueriesProps } from "../Types";
 import SavedFilters from "./SavedFilters";
 
-type FiltersProps = {
+export type FiltersProps = {
 	// set the key to be the key of the dropdowns in settings.json and the value to be the value of the dropdowns in settings.json
 	[key in keyof typeof settings.dropdowns]: string[];
 };
@@ -181,7 +181,7 @@ function Filters({
 
 				<SavedFilters
 					queries={queries}
-					setQueries={setQueries}
+					setFiltersSelected={setFiltersSelected}
 					orderMethod={orderMethod}
 					setOrderMethod={setOrderMethod}
 				/>

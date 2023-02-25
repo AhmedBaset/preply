@@ -393,28 +393,46 @@ footer {
 	}
 }
 
-// Saved Fliters 
+// Saved Fliters
 .saved-filters {
 	flex: 1 500px;
 	width: min(100%, 500px);
-	max-height: 500px;
+	max-height: 300px;
 	overflow-y: auto;
 
 	form {
-		height: 50px;
+		min-height: 50px;
 		border: 1px solid var(--clr-primary);
 		border-radius: 1vmin;
 		overflow: hidden;
 
 		& > * {
 			height: 100%;
-			border: 0;
-			border-radius: 0;
+			border: 0 !important;
+			border-radius: 0 !important;
+			outline: none;
 		}
+
+		input {
+			font-size: 1rem !important;
+		}
+
 	}
 
 	.item {
-		
+		padding: 0.3rem;
+		border-radius: 1vmin;
+		box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.1);
+		border: 1px solid #aaa;
+		cursor: pointer;
+
+		&:hover {
+			background-color: #eee;
+		}
+
+		.btn-secondary {
+			background-color: #ddd;
+		}
 	}
 }
 

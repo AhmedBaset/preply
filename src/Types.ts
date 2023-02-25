@@ -1,8 +1,5 @@
-import {
-	QueryFieldFilterConstraint,
-	QueryOrderByConstraint,
-	Timestamp,
-} from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
+const dropdowns = require("./settings.json").dropdowns;
 
 export type TeacherType = {
 	tutor_id: string;
@@ -24,9 +21,10 @@ export type TeacherType = {
 	rating?: string;
 	ethnicity?: string;
 
-	update_time: Date;
-	create_time: Date;
-};
+	update_time: Timestamp;
+	create_time: Timestamp;
+	
+}
 
 // export type QueriesProps = (
 // 	| QueryFieldFilterConstraint
@@ -35,7 +33,11 @@ export type TeacherType = {
 
 export type QueriesProps = {
 	field: keyof TeacherType;
-	value: (string)[];
-}[]
+	value: string[];
+}[];
 
-export type OrderMethodType = "tutor_id" | "tutor_name" | "create_time" | "update_time"
+export type OrderMethodType =
+	| "tutor_id"
+	| "tutor_name"
+	| "create_time"
+	| "update_time";

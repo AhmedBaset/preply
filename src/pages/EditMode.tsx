@@ -46,7 +46,9 @@ function EditMode({
 	const [editMode, setEditMode] = useState(storage.isEditMode);
 
 	React.useEffect(() => {
-		setStorage({isEditMode: editMode})
+		setStorage({ isEditMode: editMode });
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [editMode])
 
 	return (

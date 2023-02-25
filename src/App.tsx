@@ -35,10 +35,15 @@ function App() {
 	const getData = async () => {
 		const q = query(
 			collection(db, COLLECTION_NAME),
-			orderBy(orderMethod, orderMethod === "update_time" || orderMethod === "create_time" ? "desc" : "asc")
+			orderBy(
+				orderMethod,
+				orderMethod === "update_time" || orderMethod === "create_time"
+					? "desc"
+					: "asc"
+			)
 		);
 
-		setLoading(true)
+		setLoading(true);
 
 		//* If you want to limit the number of data from firestore. But In this case you can't knew the number of documents in the collection and the number of pages.
 		// const q = query(
@@ -71,8 +76,8 @@ function App() {
 	// TODO: Filter data
 	useEffect(() => {
 		if (queries.length === 0) {
-			setFilteredData([])
-			return
+			setFilteredData([]);
+			return;
 		}
 
 		const data: { data: TeacherType; doc_id: string }[] = [];
@@ -96,18 +101,17 @@ function App() {
 			if (matched === queries.length) data.push(doc);
 		});
 
-		if (orderMethod === 'tutor_id') {
-			setFilteredData(data.sort(() => { 
-				const random = Math.random()
-				if (random > 0.5) return 1
-				if (random < 0.5) return -1
-				return 0
-			}
-			))
-		} else { 
+		if (orderMethod === "tutor_id") {
+			const sortedData = data.sort(() => {
+				const random = Math.random();
+				if (random > 0.5) return 1;
+				if (random < 0.5) return -1;
+				return 0;
+			});
+			setFilteredData(sortedData);
+		} else {
 			setFilteredData(data);
 		}
-
 
 		// setFilteredData(sortArray(data, orderMethod));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
