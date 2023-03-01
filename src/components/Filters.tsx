@@ -159,12 +159,17 @@ function Filters({
 								<span className="text-gray">{option}</span>
 								<input
 									type="checkbox"
-									checked={filtersSelected[key].includes(option)}
+									checked={
+										filtersSelected[key]?.includes(option) || false
+									}
 									onChange={(event) => {
 										setFiltersSelected((prev) => {
 											const newValue = prev;
 											if (event.target.checked) {
-												newValue[key] = [...newValue[key], option];
+												const val = [option]
+												if (newValue[key]) val.push(...newValue[key])
+
+												newValue[key] = val;
 											} else {
 												newValue[key] = newValue[key].filter(
 													(item) => item !== option

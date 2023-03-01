@@ -101,6 +101,10 @@ section.card {
 	grid-template-columns: auto 1fr auto;
 	gap: 1.5rem;
 
+	@include mobile {
+		gap: 1rem !important;
+	}
+
 	div.image {
 		width: 160px;
 		height: 160px;
@@ -136,6 +140,7 @@ section.card {
 
 		@include mobile {
 			grid-column: 1 / 4;
+			gap: .5rem;
 		}
 
 		.first {
@@ -144,6 +149,7 @@ section.card {
 		.last {
 			display: flex;
 			gap: 1rem;
+			flex-wrap: wrap;
 		}
 
 		h2 {
@@ -197,6 +203,12 @@ section.card {
 					display: none;
 				}
 			}
+		}
+	}
+
+	.personal-info {
+		@include mobile {
+			grid-column: 2/ -1 !important;
 		}
 	}
 
@@ -416,7 +428,6 @@ footer {
 		input {
 			font-size: 1rem !important;
 		}
-
 	}
 
 	.item {

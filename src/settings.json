@@ -26,5 +26,11 @@
 	"buttons_links": {
 		"book_lesson": "https://www.google.com",
 		"message": "https://www.google.com"
+	},
+
+	"banner_image": "https://picsum.photos/800/100",
+	"sign_up_mode": true,
+	"register_page": {
+		
 	}
 }
