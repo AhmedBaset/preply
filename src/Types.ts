@@ -21,8 +21,8 @@ export type TeacherType = {
 	rating?: string;
 	ethnicity?: string;
 
-	update_time: Timestamp;
-	create_time: Timestamp;
+	update_time?: Timestamp;
+	create_time?: Timestamp;
 	
 }
 

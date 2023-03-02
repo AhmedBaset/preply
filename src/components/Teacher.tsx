@@ -6,7 +6,7 @@ import { ReactComponent as UserSvg } from "./../assets/user.svg";
 import { ReactComponent as MessageSvg } from "./../assets/message.svg";
 import { ReactComponent as StarSvg } from "./../assets/star.svg";
 import settings from "./../settings.json";
-import { COLLECTION_NAME } from "./../firebase-config";
+import { auth, COLLECTION_NAME } from "./../firebase-config";
 import { db } from "../firebase-config";
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import ModalComponent from "./Modal";
@@ -16,9 +16,10 @@ type Props = {
 	editMode: boolean;
 	setError?: React.Dispatch<React.SetStateAction<string>>;
 	doc_id: string;
+	setIsSignOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
+function Teacher({ teacherData, editMode, setError, doc_id, setIsSignOpen }: Props) {
 	const [isShowAllDescription, setIsShowAllDescription] =
 		React.useState(false);
 	const [teacher, setTeacher] = React.useState(teacherData);
@@ -145,7 +146,7 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 							<div className="flex-center flex-col gap flex-auto">
 								<div className="text-flex">
 									<StarSvg fill="#fdc425" height={13} width={13} />
-									<span className="text-xl">{teacher.rating}</span>
+									<span className="text-d-xl">{teacher.rating}</span>
 								</div>
 								<p
 									className="text-flex"
@@ -243,15 +244,27 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 						</p>
 					</div>
 					<div className="last buttons">
-						<a
-							href={settings.buttons_links.book_lesson}
+						<button
+							onClick={() => {
+								if (settings.sign_up_mode && !auth.currentUser && setIsSignOpen) {
+									setIsSignOpen(true);
+								} else {
+									window.open(settings.buttons_links.book_lesson);
+								}
+							}}
 							title="Book trail lesson"
 							className="btn btn-primary"
 						>
 							Book trail lesson
-						</a>
-						<a
-							href={settings.buttons_links.message}
+						</button>
+						<button
+							onClick={() => {
+								if (settings.sign_up_mode && !auth.currentUser && setIsSignOpen) {
+									setIsSignOpen(true);
+								} else {
+									window.open(settings.buttons_links.message);
+								}
+							}}
 							title="Message"
 							className="btn btn-secondary flex-center"
 						>
@@ -260,7 +273,7 @@ function Teacher({ teacherData, editMode, setError, doc_id }: Props) {
 								style={{ width: 20, height: 20, fontSize: 20 }}
 							/>
 							<span className="text">Message</span>
-						</a>
+						</button>
 					</div>
 				</div>
 
