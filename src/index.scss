@@ -86,6 +86,58 @@ header.header {
 		scrollbar-color: var(--clr-primary) #333;
 		scrollbar-gutter: stable;
 	}
+
+	.header-user {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 1rem;
+
+		.profile-photo {
+			width: 25px;
+			height: 25px;
+			border-radius: 50%;
+			border: 1px solid #777;
+		}
+
+		.menu-container {
+			position: relative;
+
+			svg {
+				cursor: pointer;
+			}
+		
+			.menu {
+				position: absolute;
+				right: 0;
+				top: 100%;
+				width: 300px;
+				list-style-type: none;
+				display: flex;
+				flex-direction: column;
+				gap: .5rem;
+				background-color: white;
+				box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.1);
+				border-radius: 1vmin;
+				padding: .5rem;
+
+				li {
+					button {
+						padding: .5rem;
+						width: 100%;
+						background: none;
+						border: none;
+						outline: none;
+						font-size: 1rem;
+
+						&:hover {
+							background-color: #eee;
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 .teachers-list {

@@ -162,7 +162,9 @@ function Authentication({ setIsSignOpen }: Props) {
 				language,
 				birthday: Timestamp.fromDate(birthday),
 				gender,
-				photo_url: "",
+				photo_url:
+					"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png",
+				uid: auth.currentUser?.uid,
 			});
 		} catch (err: any) {
 			setError(err.message);

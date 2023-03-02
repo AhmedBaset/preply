@@ -1,8 +1,16 @@
 import React, { Suspense, useEffect, useLayoutEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { db, COLLECTION_NAME } from "./firebase-config";
-import { OrderMethodType, QueriesProps, TeacherType } from "./Types";
+import {
+	collection,
+	doc,
+	getDoc,
+	getDocs,
+	orderBy,
+	query,
+} from "firebase/firestore";
+import { db, COLLECTION_NAME, auth } from "./firebase-config";
+import { OrderMethodType, QueriesProps, TeacherType, UserProps } from "./Types";
+import { onAuthStateChanged } from "firebase/auth";
 
 const Home = React.lazy(() => import("./pages/Home"));
 const EditMode = React.lazy(() => import("./pages/EditMode"));
@@ -26,6 +34,7 @@ function App() {
 	const [queries, setQueries] = useState<QueriesProps>([]);
 	const [queriesCode, setQueriesCode] = useState("");
 	const [orderMethod, setOrderMethod] = useState<OrderMethodType>("tutor_id");
+	const [currentUser, setCurrentUser] = useState<UserProps>(null);
 
 	const queriesAsString = JSON.stringify(queries);
 	const dataFromFirestoreAsString = JSON.stringify(dataFromFirestore);
@@ -125,6 +134,19 @@ function App() {
 		);
 	}, [orderMethod]);
 
+	useEffect(() => {
+		onAuthStateChanged(auth, async (user) => {
+			if (!user) return;
+
+			const docRef = doc(db, "users", user.uid);
+
+			const snapshot = await getDoc(docRef);
+			if (!snapshot.exists()) return;
+
+			setCurrentUser(snapshot.data() as UserProps);
+		});
+	}, []);
+
 	// TODO: Set teachers based on current page
 	useEffect(() => {
 		setTeachers(filteredData.slice((currentPage - 1) * 10, currentPage * 10));
@@ -175,6 +197,7 @@ function App() {
 								loading={loading}
 								setQueries={setQueries}
 								setOrderMethod={setOrderMethod}
+								currentUser={currentUser}
 							/>
 						}
 					/>
