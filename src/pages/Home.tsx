@@ -76,6 +76,11 @@ function Home({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	useEffect(() => {
+		document.body.style.overflow = isSignOpen ? "hidden": "auto"
+	}, [isSignOpen])
+	
+
 	return (
 		<>
 			<img
@@ -132,7 +137,7 @@ function Home({
 				setCurrentPage={setCurrentPage}
 			/>
 
-			{isSignOpen && <Authentication />}
+			{isSignOpen && <Authentication setIsSignOpen={setIsSignOpen} />}
 		</>
 	);
 }

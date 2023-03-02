@@ -1,5 +1,5 @@
 {
-   "dropdowns": {
+	"dropdowns": {
 		"gender": {
 			"0": "None",
 			"1": "Male",
@@ -31,7 +31,9 @@
 	"banner_image": "",
 	"banner_imagesssssssss": "https://picsum.photos/800/100",
 	"sign_up_mode": true,
-	"register_page": {
-		
+	"registeration": {
+		"text": "Welcome falakfjljafl afslkjldf",
+		"button_text": "Button",
+		"button_url": "https://www.google.com"
 	}
 }

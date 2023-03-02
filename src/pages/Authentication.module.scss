@@ -11,6 +11,8 @@
 
 .wrapper {
 	background-color: white;
+	overflow: auto;
+	max-height: 100%;
 	width: min(100%, 500px);
 	border-radius: 1rem;
 	padding: 2rem 1rem;
@@ -39,6 +41,7 @@
 	font-weight: 500;
 	font-size: 1rem;
 	cursor: pointer;
+	text-align: center;
 
 	--clr: var(--clr-primary);
 
@@ -48,7 +51,7 @@
 }
 
 .button_grid {
-   display: grid;
+	display: grid;
 	gap: 0.5rem;
 	align-items: center;
 	grid-template-columns: auto 1fr;
@@ -71,20 +74,56 @@
 }
 
 label {
-   display: block;
-   margin-bottom: .3rem;
+	display: block;
+	margin-bottom: 0.3rem;
 }
 .input {
 	display: block;
 	width: 100%;
-	padding: .5rem 1rem;
+	padding: 0.5rem 1rem;
 	font-size: 1rem;
 	border-radius: 1vmin;
 	box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.1);
-   border: 1px solid #bbb;
-   outline: none;
+	border: 1px solid #bbb;
+	outline: none;
 
-   &:focus {
-      box-shadow: 0 0 0 4px #ddd;
-   }
+	&:focus {
+		box-shadow: 0 0 0 4px #ddd;
+	}
+}
+
+.upload_image {
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	position: relative;
+	background-color: #ddd;
+	border: 1px solid #888;
+
+	span {
+		position: absolute;
+		right: 5%;
+		bottom: 5%;
+		width: 50px;
+		height: 50px;
+		background-color: white;
+		border: 1px solid #888;
+		border-radius: 50%;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		fill: #000;
+		font-size: 1.2rem;
+	}
+}
+
+.button_skip {
+	width: 100%;
+	outline: none;
+	border: none;
+	padding: 0.5rem;
+	background: #eee;
+	border-radius: 50vmin;
+	cursor: pointer;
 }

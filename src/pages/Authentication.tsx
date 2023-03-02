@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import styles from "./Authentication.module.scss";
 import { ReactComponent as GoogleIcon } from "./../assets/google.svg";
@@ -17,11 +17,21 @@ import {
 	signInWithPhoneNumber,
 	signInWithPopup,
 } from "firebase/auth";
-import { auth, db } from "../firebase-config";
+import {
+	ref,
+	uploadBytesResumable,
+	UploadTaskSnapshot,
+} from "firebase/storage";
+import { auth, db, storage } from "../firebase-config";
 import codes from "./../phone-codes.json";
 import countriesObj from "./../countries";
 import languagesObj from "./../languages.json";
 import { doc, setDoc } from "firebase/firestore";
+import ImageCropper, { cropImage } from "../components/ImageCropper";
+import { Area } from "react-easy-crop";
+import getCroppedImg from "../utilities/cropImage";
+import { dataURLtoFile } from "../utilities/dataUrlToFile";
+const registeration = require("./../settings.json").registeration;
 
 const countries = Object.entries(countriesObj).map(([name]) => name);
 const languages = Object.entries(languagesObj).map(([code, name]) => name);
@@ -33,23 +43,41 @@ const steps = {
 	otp: "OTP",
 	profile_info: "PROFILE_INFO",
 	upload_image: "UPLOAD_IMAGE",
+	crop_image: "CROP_IMAGE",
+	finish: "FINISH",
+	close: "CLOSE",
 };
 
-function Authentication() {
-	const [currentStep, setCurrentStep] = useState<string>(
-		steps.choose_provider
+type Props = {
+	setIsSignOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function Authentication({ setIsSignOpen }: Props) {
+	const [currentStep, setCurrentStep] = useState(
+		// steps.choose_provider
+		steps.upload_image
 	);
 	const [error, setError] = useState("");
 	const [code, setCode] = useState(codes[0].dial_code);
+	const [image, setImage] = useState<File>();
+	const [croppedAreaPixels, setCroppedAreaPixels] = useState({} as Area);
+	const [isImageUploading, setIsImageUploading] = useState(false);
 
 	useEffect(() => {
-		let interval;
+		if (currentStep === steps.close) {
+			setIsSignOpen(false);
+		}
+	}, [currentStep, steps.close]);
+
+	useEffect(() => {
+		let interval: NodeJS.Timeout;
 
 		if (error) {
 			interval = setTimeout(() => {
 				setError("");
 			}, 5000);
 		}
+		return () => clearTimeout(interval);
 	}, [error]);
 
 	const signInUsingProvider = async (provider: AuthProvider) => {
@@ -145,10 +173,45 @@ function Authentication() {
 		setCurrentStep(steps.upload_image);
 	};
 
+	const uploadImage = async () => {
+		if (!image) return;
+		setIsImageUploading(true);
+
+		const base64Image = await getCroppedImg(
+			URL.createObjectURL(image),
+			croppedAreaPixels
+		);
+		const imageFile = dataURLtoFile(
+			base64Image,
+			auth.currentUser?.uid || "image"
+		);
+
+		const imageRef = ref(
+			storage,
+			`profile_photos/${
+				auth.currentUser?.uid || Math.random().toString(32).slice(2)
+			}.jpeg`
+		);
+
+		let uploadState: UploadTaskSnapshot;
+		try {
+			uploadState = await uploadBytesResumable(imageRef, imageFile);
+		} catch (err: any) {
+			setError(err.message);
+			return;
+		} finally {
+			setIsImageUploading(false);
+		}
+
+		if (uploadState.state === "success") {
+			setCurrentStep(steps.finish);
+		}
+	};
+
 	return createPortal(
 		<div className={styles.container}>
-			{error && <div className={styles.error}>{error}</div>}
 			<div className={styles.wrapper}>
+				{error && <div className={styles.error}>{error}</div>}
 				{currentStep === steps.choose_provider ? (
 					<div className={styles.list}>
 						<h2 className="text-center">Sign up</h2>
@@ -391,6 +454,74 @@ function Authentication() {
 							Update Profile Information
 						</button>
 					</form>
+				) : currentStep === steps.upload_image ? (
+					<div className={styles.list}>
+						<h2 className="text-center">Profile photo</h2>
+						<div
+							className="flex-center"
+							style={{ marginBottom: "100px" }}
+						>
+							<div className={styles.upload_image}>
+								<span>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 512 512"
+									>
+										<path d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z" />
+									</svg>
+								</span>
+							</div>
+						</div>
+						<label htmlFor="upload_image">
+							<span className={styles.button}>Upload photo</span>
+							<input
+								type="file"
+								accept="image/*"
+								id="upload_image"
+								style={{ display: "none" }}
+								onChange={(e) => {
+									if (e.target.files?.[0]) {
+										setImage(e.target.files[0]);
+										setCurrentStep(steps.crop_image);
+									}
+								}}
+							/>
+						</label>
+						<button
+							onClick={() => setCurrentStep(steps.finish)}
+							className={styles.button_skip}
+						>
+							Skip
+						</button>
+					</div>
+				) : currentStep === steps.crop_image && image ? (
+					<div className={styles.list}>
+						<h2 className="text-center">Crop your photo</h2>
+						<div style={{ position: "relative", height: "250px" }}>
+							<ImageCropper
+								imageUrl={URL.createObjectURL(image)}
+								setCroppedAreaPixels={setCroppedAreaPixels}
+							/>
+						</div>
+						<button className={styles.button} onClick={uploadImage}>
+							{isImageUploading ? "Uploading" : "Done"}
+						</button>
+					</div>
+				) : currentStep === steps.finish ? (
+					<div className="flex-center flex-col" style={{ gap: "1rem" }}>
+						<h2>Registeration Completed</h2>
+						<p style={{ color: "#333" }}>{registeration.text}</p>
+						<button
+							onClick={() => {
+								setCurrentStep(steps.close);
+								window.open(registeration.button_url);
+							}}
+							className={`${styles.button}`}
+							style={{ width: "auto" }}
+						>
+							{registeration.button_text}
+						</button>
+					</div>
 				) : (
 					<></>
 				)}
