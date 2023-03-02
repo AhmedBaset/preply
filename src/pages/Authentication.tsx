@@ -18,6 +18,7 @@ import {
 	signInWithPopup,
 } from "firebase/auth";
 import {
+	getDownloadURL,
 	ref,
 	uploadBytesResumable,
 	UploadTaskSnapshot,
@@ -165,6 +166,7 @@ function Authentication({ setIsSignOpen }: Props) {
 				language,
 				birthday,
 				gender,
+				photo_url: "",
 			});
 		} catch (err: any) {
 			setError(err.message);
@@ -174,7 +176,7 @@ function Authentication({ setIsSignOpen }: Props) {
 	};
 
 	const uploadImage = async () => {
-		if (!image) return;
+		if (!image || !auth.currentUser) return;
 		setIsImageUploading(true);
 
 		const base64Image = await getCroppedImg(
@@ -188,14 +190,16 @@ function Authentication({ setIsSignOpen }: Props) {
 
 		const imageRef = ref(
 			storage,
-			`profile_photos/${
-				auth.currentUser?.uid || Math.random().toString(32).slice(2)
-			}.jpeg`
+			`profile_photos/${auth.currentUser?.uid}.jpeg`
 		);
 
 		let uploadState: UploadTaskSnapshot;
 		try {
 			uploadState = await uploadBytesResumable(imageRef, imageFile);
+
+			const docRef = doc(db, "users", auth.currentUser.uid);
+			const imageUrl = await getDownloadURL(imageRef);
+			setDoc(docRef, { photo_url: imageUrl });
 		} catch (err: any) {
 			setError(err.message);
 			return;
