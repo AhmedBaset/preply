@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { Suspense, useEffect, useLayoutEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db, COLLECTION_NAME } from "./firebase-config";
@@ -161,45 +161,46 @@ function App() {
 					{error}
 				</div>
 			)}
-
-			<Routes>
-				<Route
-					path="/"
-					element={
-						<Home
-							teachersLength={teachersLength}
-							currentPage={currentPage}
-							setCurrentPage={setCurrentPage}
-							teachers={teachers}
-							setError={setError}
-							loading={loading}
-							setQueries={setQueries}
-							setOrderMethod={setOrderMethod}
-						/>
-					}
-				/>
-				<Route
-					path="/edit-mode"
-					element={
-						<EditMode
-							teachersLength={teachersLength}
-							currentPage={currentPage}
-							setCurrentPage={setCurrentPage}
-							teachers={teachers}
-							setError={setError}
-							loading={loading}
-							setQueries={setQueries}
-							queriesCode={queriesCode}
-							queries={queries}
-							setQueriesCode={setQueriesCode}
-							orderMethod={orderMethod}
-							setOrderMethod={setOrderMethod}
-							dataFromFireStore={dataFromFirestore}
-							getData={getData}
-						/>
-					}
-				/>
-			</Routes>
+			<Suspense>
+				<Routes>
+					<Route
+						path="/"
+						element={
+							<Home
+								teachersLength={teachersLength}
+								currentPage={currentPage}
+								setCurrentPage={setCurrentPage}
+								teachers={teachers}
+								setError={setError}
+								loading={loading}
+								setQueries={setQueries}
+								setOrderMethod={setOrderMethod}
+							/>
+						}
+					/>
+					<Route
+						path="/edit-mode"
+						element={
+							<EditMode
+								teachersLength={teachersLength}
+								currentPage={currentPage}
+								setCurrentPage={setCurrentPage}
+								teachers={teachers}
+								setError={setError}
+								loading={loading}
+								setQueries={setQueries}
+								queriesCode={queriesCode}
+								queries={queries}
+								setQueriesCode={setQueriesCode}
+								orderMethod={orderMethod}
+								setOrderMethod={setOrderMethod}
+								dataFromFireStore={dataFromFirestore}
+								getData={getData}
+							/>
+						}
+					/>
+				</Routes>
+			</Suspense>
 		</div>
 	);
 }

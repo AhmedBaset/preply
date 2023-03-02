@@ -16,6 +16,7 @@ import {
 	RecaptchaVerifier,
 	signInWithPhoneNumber,
 	signInWithPopup,
+	UserCredential,
 } from "firebase/auth";
 import {
 	getDownloadURL,
@@ -27,7 +28,7 @@ import { auth, db, storage } from "../firebase-config";
 import codes from "./../phone-codes.json";
 import countriesObj from "./../countries";
 import languagesObj from "./../languages.json";
-import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { doc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 import ImageCropper, { cropImage } from "../components/ImageCropper";
 import { Area } from "react-easy-crop";
 import getCroppedImg from "../utilities/cropImage";
@@ -54,10 +55,7 @@ type Props = {
 };
 
 function Authentication({ setIsSignOpen }: Props) {
-	const [currentStep, setCurrentStep] = useState(
-		// steps.choose_provider
-		steps.upload_image
-	);
+	const [currentStep, setCurrentStep] = useState(steps.choose_provider);
 	const [error, setError] = useState("");
 	const [code, setCode] = useState(codes[0].dial_code);
 	const [image, setImage] = useState<File>();
@@ -107,7 +105,7 @@ function Authentication({ setIsSignOpen }: Props) {
 		setCurrentStep(steps.profile_info);
 	};
 
-	let phoneCredential: ConfirmationResult;
+	let confirmation = React.useRef<ConfirmationResult>();
 	const signInUsingPhoneNumber = async (
 		e: React.FormEvent<HTMLFormElement>
 	) => {
@@ -119,17 +117,15 @@ function Authentication({ setIsSignOpen }: Props) {
 			auth
 		);
 
-		try {
-			phoneCredential = await signInWithPhoneNumber(
-				auth,
-				phoneNumber,
-				recapcha
-			);
-		} catch (err: any) {
-			setError(err.message);
-			return;
-		}
-		setCurrentStep(steps.otp);
+		signInWithPhoneNumber(auth, phoneNumber, recapcha)
+			.then((confirmationResult) => {
+				confirmation.current = confirmationResult;
+				setCurrentStep(steps.otp);
+			})
+			.catch((err) => {
+				setError(err.message);
+				return;
+			});
 	};
 
 	const verifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -137,7 +133,7 @@ function Authentication({ setIsSignOpen }: Props) {
 		const otp = e.currentTarget.otp.value;
 
 		try {
-			await phoneCredential.confirm(otp);
+			await confirmation.current?.confirm(otp);
 		} catch (err: any) {
 			setError(err.message);
 			return;
@@ -199,7 +195,7 @@ function Authentication({ setIsSignOpen }: Props) {
 
 			const docRef = doc(db, "users", auth.currentUser.uid);
 			const imageUrl = await getDownloadURL(imageRef);
-			setDoc(docRef, { photo_url: imageUrl });
+			await updateDoc(docRef, { photo_url: imageUrl });
 		} catch (err: any) {
 			setError(err.message);
 			return;
@@ -281,7 +277,7 @@ function Authentication({ setIsSignOpen }: Props) {
 								placeholder="someone@example.com"
 								required
 								pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z0-0]{2,8}"
-								type="text"
+								type="email"
 								className={styles.input}
 							/>
 						</div>
@@ -293,7 +289,7 @@ function Authentication({ setIsSignOpen }: Props) {
 								id="password"
 								placeholder="********"
 								required
-								type="text"
+								type="password"
 								className={styles.input}
 							/>
 						</div>
@@ -310,7 +306,11 @@ function Authentication({ setIsSignOpen }: Props) {
 							<select
 								name="code"
 								className={styles.input}
-								style={{ width: "70px", paddingInline: ".1rem" }}
+								style={{
+									width: "80px",
+									paddingInline: ".1rem",
+									fontSize: "12px",
+								}}
 								defaultValue={codes[0].dial_code}
 								onChange={(e) => {
 									setCode(e.target.value);
@@ -330,6 +330,7 @@ function Authentication({ setIsSignOpen }: Props) {
 									required
 									pattern="^[0-9-+\s]+$"
 									type="text"
+									inputMode="numeric"
 									className={`${styles.input} flex-auto`}
 								/>
 							</div>
@@ -356,6 +357,7 @@ function Authentication({ setIsSignOpen }: Props) {
 								placeholder="OTP"
 								required
 								type="text"
+								inputMode="numeric"
 								className={styles.input}
 							/>
 						</div>
@@ -386,8 +388,9 @@ function Authentication({ setIsSignOpen }: Props) {
 							<input
 								name="email"
 								id="email"
-								placeholder="John Doe"
+								placeholder="someone@example.com"
 								defaultValue={auth.currentUser?.email || ""}
+								pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z0-0]{2,8}"
 								required
 								type="text"
 								className={styles.input}
@@ -508,7 +511,7 @@ function Authentication({ setIsSignOpen }: Props) {
 							/>
 						</div>
 						<button className={styles.button} onClick={uploadImage}>
-							{isImageUploading ? "Uploading" : "Done"}
+							{isImageUploading ? "Uploading..." : "Done"}
 						</button>
 					</div>
 				) : currentStep === steps.finish ? (
@@ -518,7 +521,8 @@ function Authentication({ setIsSignOpen }: Props) {
 						<button
 							onClick={() => {
 								setCurrentStep(steps.close);
-								window.open(registeration.button_url);
+								registeration.button_url &&
+									window.open(registeration.button_url);
 							}}
 							className={`${styles.button}`}
 							style={{ width: "auto" }}

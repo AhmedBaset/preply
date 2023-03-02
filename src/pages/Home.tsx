@@ -20,31 +20,31 @@ type Props = {
 	setOrderMethod: React.Dispatch<React.SetStateAction<OrderMethodType>>;
 };
 
-const test = [
-	{
-		data: {
-			description:
-				"Friendly, TEFL Certified/ Native English Speaker with over 8 years of experience - CONVERSATIONAL ENGLISH Hello my potential students! My name is Lauren or Ren, however you prefer. :)\nI am a native English speaker from New York City and a newly certified English Tutor with a specialization in Online Tutoring from a top, internationally recognized TEFL program.",
-			ethnicity: "white",
-			gender: "Female",
-			is_newly_joined: true,
-			languages: "Speaks:\nEnglishNative",
-			lesson_duration: "50-min lesson",
-			lessons: 1,
-			n_of_reviews: 0,
-			price: "15",
-			rating: "3",
-			students: 13,
-			thumbnail_img_local_path: "thumbnail_imgs/lauren_t.jpg",
-			thumbnail_img_url: "",
-			tutor_country: "United States of America",
-			tutor_id: "2607674",
-			tutor_name: "Lauren T.",
-			tutor_teaches: "English",
-		},
-		doc_id: "22",
-	},
-];
+// const test = [
+// 	{
+// 		data: {
+// 			description:
+// 				"Friendly, TEFL Certified/ Native English Speaker with over 8 years of experience - CONVERSATIONAL ENGLISH Hello my potential students! My name is Lauren or Ren, however you prefer. :)\nI am a native English speaker from New York City and a newly certified English Tutor with a specialization in Online Tutoring from a top, internationally recognized TEFL program.",
+// 			ethnicity: "white",
+// 			gender: "Female",
+// 			is_newly_joined: true,
+// 			languages: "Speaks:\nEnglishNative",
+// 			lesson_duration: "50-min lesson",
+// 			lessons: 1,
+// 			n_of_reviews: 0,
+// 			price: "15",
+// 			rating: "3",
+// 			students: 13,
+// 			thumbnail_img_local_path: "thumbnail_imgs/lauren_t.jpg",
+// 			thumbnail_img_url: "",
+// 			tutor_country: "United States of America",
+// 			tutor_id: "2607674",
+// 			tutor_name: "Lauren T.",
+// 			tutor_teaches: "English",
+// 		},
+// 		doc_id: "22",
+// 	},
+// ];
 
 function Home({
 	teachersLength,
@@ -107,17 +107,6 @@ function Home({
 					</p>
 				)}
 
-				{test &&
-					test.map((teacher) => (
-						<Teacher
-							teacherData={teacher.data}
-							key={teacher.data.tutor_id}
-							editMode={false}
-							setError={setError}
-							doc_id={teacher.doc_id}
-							setIsSignOpen={setIsSignOpen}
-						/>
-					))}
 				{teachers &&
 					teachers.map((teacher) => (
 						<Teacher

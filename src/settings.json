@@ -28,12 +28,12 @@
 		"message": "https://www.google.com"
 	},
 
-	"banner_image": "",
-	"banner_imagesssssssss": "https://picsum.photos/800/100",
+	"banner_image": "https://picsum.photos/800/100",
 	"sign_up_mode": true,
 	"registeration": {
 		"text": "Welcome falakfjljafl afslkjldf",
 		"button_text": "Button",
-		"button_url": "https://www.google.com"
+		"--->>> README then remove me": "leave \"button_url\" empty to prevent redirect. It will just close the popup",
+		"button_url": ""
 	}
 }
