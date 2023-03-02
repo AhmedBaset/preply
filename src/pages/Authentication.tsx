@@ -27,7 +27,7 @@ import { auth, db, storage } from "../firebase-config";
 import codes from "./../phone-codes.json";
 import countriesObj from "./../countries";
 import languagesObj from "./../languages.json";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
 import ImageCropper, { cropImage } from "../components/ImageCropper";
 import { Area } from "react-easy-crop";
 import getCroppedImg from "../utilities/cropImage";
@@ -152,7 +152,7 @@ function Authentication({ setIsSignOpen }: Props) {
 		const email = e.currentTarget.email.value;
 		const country = e.currentTarget.country.value;
 		const language = e.currentTarget.language.value;
-		const birthday = e.currentTarget.birthday.value;
+		const birthday = e.currentTarget.birthday.valueAsDate;
 		const gender = e.currentTarget.gender.value;
 
 		if (!auth.currentUser) return;
@@ -164,7 +164,7 @@ function Authentication({ setIsSignOpen }: Props) {
 				email,
 				country,
 				language,
-				birthday,
+				birthday: Timestamp.fromDate(birthday),
 				gender,
 				photo_url: "",
 			});
@@ -230,7 +230,7 @@ function Authentication({ setIsSignOpen }: Props) {
 							<span>Sign in with Google</span>
 						</button>
 
-						<button
+						{/* <button
 							onClick={() =>
 								signInUsingProvider(new FacebookAuthProvider())
 							}
@@ -248,7 +248,7 @@ function Authentication({ setIsSignOpen }: Props) {
 						>
 							<AppleIcon />
 							<span>Sign in with Apple</span>
-						</button>
+						</button> */}
 
 						<button
 							onClick={() => setCurrentStep(steps.email_and_password)}
