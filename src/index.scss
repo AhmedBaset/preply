@@ -72,6 +72,10 @@ header.header {
 	gap: 0.5rem;
 	flex-wrap: wrap;
 
+	@include mobile {
+		padding: 1rem 1rem 0 1rem;
+	}
+
 	code {
 		background-color: #333;
 		box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
@@ -100,13 +104,19 @@ header.header {
 			border: 1px solid #777;
 		}
 
+		.btn {
+			padding: 0.4rem 1.2rem;
+			font-size: 16px;
+			border-radius: 10vmin;
+		}
+
 		.menu-container {
 			position: relative;
 
 			svg {
 				cursor: pointer;
 			}
-		
+
 			.menu {
 				position: absolute;
 				right: 0;
@@ -115,15 +125,15 @@ header.header {
 				list-style-type: none;
 				display: flex;
 				flex-direction: column;
-				gap: .5rem;
+				gap: 0.5rem;
 				background-color: white;
 				box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.1);
 				border-radius: 1vmin;
-				padding: .5rem;
+				padding: 0.5rem;
 
 				li {
 					button {
-						padding: .5rem;
+						padding: 0.5rem;
 						width: 100%;
 						background: none;
 						border: none;
@@ -142,6 +152,9 @@ header.header {
 
 .teachers-list {
 	padding: 1.5rem;
+	@include mobile {
+		padding: 1rem;
+	}
 }
 
 section.card {
@@ -160,7 +173,9 @@ section.card {
 
 	@include mobile {
 		gap: 1rem !important;
-		
+		padding: 0.5rem;
+		border-radius: 1rem;
+		margin-bottom: 1rem;
 	}
 
 	div.image {
@@ -178,9 +193,10 @@ section.card {
 		}
 
 		@include mobile {
-			width: 80px;
-			height: 80px;
+			width: 105px;
+			height: 105px;
 			grid-row: 1 / 2;
+			border-radius: 0.8rem;
 		}
 
 		img {
@@ -204,7 +220,7 @@ section.card {
 
 		@include mobile {
 			grid-column: 1 / 4;
-			gap: 0.5rem;
+			gap: 0.25rem;
 		}
 
 		.first {
@@ -221,22 +237,22 @@ section.card {
 			margin-bottom: 0.25em;
 		}
 		p {
-			font-size: .8em;
+			font-size: 0.8em;
 		}
 
 		.text-d-xl {
-			font-size: clamp(18px, 6vw, 24px)
+			font-size: clamp(16px, 6vw, 24px);
 		}
 		.price {
 			vertical-align: bottom;
 
 			span:first-child {
-				font-size: clamp(18px, 6vw, 24px);
+				font-size: clamp(16px, 6vw, 24px);
 				vertical-align: bottom;
 				color: var(--clr-dark);
 			}
 			span:last-child {
-				font-size: clamp(8px, 3vw, 12px)
+				font-size: clamp(8px, 3vw, 12px);
 			}
 		}
 
@@ -277,6 +293,10 @@ section.card {
 	.personal-info {
 		@include mobile {
 			grid-column: 2/ -1 !important;
+
+			.gap {
+				gap: 0.1rem;
+			}
 		}
 	}
 
@@ -324,6 +344,10 @@ section.card {
 footer {
 	padding: 0 1.5rem 1.5rem 1.5rem;
 	text-align: center;
+
+	@include mobile {
+		padding: 0 1rem 1rem 1rem;
+	}
 
 	ul {
 		display: flex;
@@ -625,4 +649,14 @@ svg {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+picture {
+	display: block;
+	width: 100%;
+
+	img {
+		display: block;
+		width: 100%;
+	}
 }

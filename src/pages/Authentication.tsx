@@ -14,6 +14,7 @@ import {
 	GoogleAuthProvider,
 	OAuthProvider,
 	RecaptchaVerifier,
+	signInWithEmailAndPassword,
 	signInWithPhoneNumber,
 	signInWithPopup,
 	UserCredential,
@@ -28,15 +29,39 @@ import { auth, db, storage } from "../firebase-config";
 import codes from "./../phone-codes.json";
 import countriesObj from "./../countries";
 import languagesObj from "./../languages.json";
-import { doc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
-import ImageCropper, { cropImage } from "../components/ImageCropper";
+import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import ImageCropper from "../components/ImageCropper";
 import { Area } from "react-easy-crop";
 import getCroppedImg from "../utilities/cropImage";
 import { dataURLtoFile } from "../utilities/dataUrlToFile";
+import downscale from "./../utilities/downscale";
 const registeration = require("./../settings.json").registeration;
 
-const countries = Object.entries(countriesObj).map(([name]) => name);
+const countries: { country: string; flag: string }[] = Object.entries(
+	countriesObj
+).map(([country, flag]) => ({
+	country,
+	flag,
+}));
 const languages = Object.entries(languagesObj).map(([code, name]) => name);
+const months: { month: string; index: number }[] = [
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"Novemver",
+	"December",
+].map((month, index) => ({ month, index }));
+const daysInTheMonth: string[] = [];
+for (let i = 1; i <= 31; i++) {
+	daysInTheMonth.push(`${i}`);
+}
 
 const steps = {
 	choose_provider: "CHOOSE_PROVIDER",
@@ -48,14 +73,19 @@ const steps = {
 	crop_image: "CROP_IMAGE",
 	finish: "FINISH",
 	close: "CLOSE",
+	pending_approval_message: "PENDING_APPROVAL_MESSAGE",
 };
 
 type Props = {
 	setIsSignOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	step?: string;
+	setStep: React.Dispatch<React.SetStateAction<string>>;
 };
 
-function Authentication({ setIsSignOpen }: Props) {
-	const [currentStep, setCurrentStep] = useState(steps.choose_provider);
+function Authentication({ step, setIsSignOpen, setStep }: Props) {
+	const [currentStep, setCurrentStep] = useState(
+		step || steps.choose_provider
+	);
 	const [error, setError] = useState("");
 	const [code, setCode] = useState(codes[0].dial_code);
 	const [image, setImage] = useState<File>();
@@ -65,6 +95,7 @@ function Authentication({ setIsSignOpen }: Props) {
 	useEffect(() => {
 		if (currentStep === steps.close) {
 			setIsSignOpen(false);
+			setStep("");
 		}
 	}, [currentStep, steps.close]);
 
@@ -86,7 +117,7 @@ function Authentication({ setIsSignOpen }: Props) {
 			setError(err.message);
 			return;
 		}
-		setCurrentStep(steps.profile_info);
+		checkUserExist(steps.profile_info);
 	};
 
 	const signInUsingEmailAndPassword = async (
@@ -99,10 +130,19 @@ function Authentication({ setIsSignOpen }: Props) {
 		try {
 			await createUserWithEmailAndPassword(auth, email, password);
 		} catch (err: any) {
-			setError(err.message);
-			return;
+			if (err.code === "auth/email-already-in-use") {
+				try {
+					await signInWithEmailAndPassword(auth, email, password);
+				} catch (err2: any) {
+					setError(err2.message);
+					return;
+				}
+			} else {
+				setError(err.message);
+				return;
+			}
 		}
-		setCurrentStep(steps.profile_info);
+		checkUserExist(steps.profile_info);
 	};
 
 	let confirmation = React.useRef<ConfirmationResult>();
@@ -138,7 +178,7 @@ function Authentication({ setIsSignOpen }: Props) {
 			setError(err.message);
 			return;
 		}
-		setCurrentStep(steps.profile_info);
+		checkUserExist(steps.profile_info);
 	};
 
 	const updateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -148,8 +188,13 @@ function Authentication({ setIsSignOpen }: Props) {
 		const email = e.currentTarget.email.value;
 		const country = e.currentTarget.country.value;
 		const language = e.currentTarget.language.value;
-		const birthday = e.currentTarget.birthday.valueAsDate;
 		const gender = e.currentTarget.gender.value;
+
+		const day = e.currentTarget.birthdayDay.value;
+		const month = e.currentTarget.birthdayMonth.value;
+		const year = e.currentTarget.birthdayYear.value;
+
+		const birthday = new Date(parseInt(year), parseInt(month), parseInt(day));
 
 		if (!auth.currentUser) return;
 		const docRef = doc(db, "users", auth.currentUser.uid);
@@ -174,49 +219,64 @@ function Authentication({ setIsSignOpen }: Props) {
 	};
 
 	const uploadImage = async () => {
-		if (!image || !auth.currentUser) return;
+		if (!image || !auth.currentUser?.uid) return;
 		setIsImageUploading(true);
 
 		const base64Image = await getCroppedImg(
 			URL.createObjectURL(image),
 			croppedAreaPixels
 		);
-		const imageFile = dataURLtoFile(
-			base64Image,
-			auth.currentUser?.uid || "image"
-		);
 
-		const imageRef = ref(
-			storage,
-			`profile_photos/${auth.currentUser?.uid}.jpeg`
-		);
+		downscale(base64Image, async (base64: string) => {
+			const imageFile = dataURLtoFile(base64, auth.currentUser?.uid);
 
-		let uploadState: UploadTaskSnapshot;
-		try {
-			uploadState = await uploadBytesResumable(imageRef, imageFile);
+			const imageRef = ref(
+				storage,
+				`profile_photos/${auth.currentUser?.uid || "image"}.jpeg`
+			);
 
-			const docRef = doc(db, "users", auth.currentUser.uid);
-			const imageUrl = await getDownloadURL(imageRef);
-			await updateDoc(docRef, { photo_url: imageUrl });
-		} catch (err: any) {
-			setError(err.message);
-			return;
-		} finally {
-			setIsImageUploading(false);
-		}
+			let uploadState: UploadTaskSnapshot;
+			try {
+				uploadState = await uploadBytesResumable(imageRef, imageFile);
+				if (!auth.currentUser) return;
 
-		if (uploadState.state === "success") {
-			setCurrentStep(steps.finish);
+				const docRef = doc(db, "users", auth.currentUser.uid);
+				const imageUrl = await getDownloadURL(imageRef);
+				await updateDoc(docRef, { photo_url: imageUrl });
+			} catch (err: any) {
+				setError(err.message);
+				return;
+			} finally {
+				setIsImageUploading(false);
+			}
+
+			if (uploadState.state === "success") {
+				setCurrentStep(steps.finish);
+			}
+		});
+	};
+
+	const checkUserExist = async (nextStep: string) => {
+		if (!auth.currentUser) return;
+		const docRef = doc(db, "users", auth.currentUser.uid);
+		const snapshot = await getDoc(docRef);
+		if (snapshot.exists()) {
+			setCurrentStep(steps.close);
+		} else {
+			setCurrentStep(nextStep);
 		}
 	};
 
 	return createPortal(
-		<div className={styles.container}>
+		<div
+			className={styles.container}
+			onClick={(e) => e.target === e.currentTarget && setIsSignOpen(false)}
+		>
 			<div className={styles.wrapper}>
 				{error && <div className={styles.error}>{error}</div>}
 				{currentStep === steps.choose_provider ? (
 					<div className={styles.list}>
-						<h2 className="text-center">Sign up</h2>
+						<h2 className="text-center">Sign in</h2>
 
 						<button
 							onClick={() =>
@@ -225,7 +285,7 @@ function Authentication({ setIsSignOpen }: Props) {
 							className={`${styles.button} ${styles.button_grid} ${styles.Google}`}
 						>
 							<GoogleIcon />
-							<span>Sign in with Google</span>
+							<span>Continue with Google</span>
 						</button>
 
 						{/* <button
@@ -235,7 +295,7 @@ function Authentication({ setIsSignOpen }: Props) {
 							className={`${styles.button} ${styles.button_grid} ${styles.Facebook}`}
 						>
 							<FacebookIcon />
-							<span>Sign in with Facebook</span>
+							<span>Continue with Facebook</span>
 						</button>
 
 						<button
@@ -245,7 +305,7 @@ function Authentication({ setIsSignOpen }: Props) {
 							className={`${styles.button} ${styles.button_grid} ${styles.Apple}`}
 						>
 							<AppleIcon />
-							<span>Sign in with Apple</span>
+							<span>Continue with Apple</span>
 						</button> */}
 
 						<button
@@ -253,7 +313,7 @@ function Authentication({ setIsSignOpen }: Props) {
 							className={`${styles.button} ${styles.button_grid} ${styles.Email}`}
 						>
 							<MailIcon />
-							<span>Sign in with Email</span>
+							<span>Continue with Email</span>
 						</button>
 
 						<button
@@ -261,7 +321,7 @@ function Authentication({ setIsSignOpen }: Props) {
 							className={`${styles.button} ${styles.button_grid} ${styles.Phone}`}
 						>
 							<PhoneIcon />
-							<span>Sign in with Phone number</span>
+							<span>Continue with Phone number</span>
 						</button>
 					</div>
 				) : currentStep === steps.email_and_password ? (
@@ -269,7 +329,7 @@ function Authentication({ setIsSignOpen }: Props) {
 						className={styles.list}
 						onSubmit={signInUsingEmailAndPassword}
 					>
-						<h2 className="text-center">Sign up with Email</h2>
+						<h2 className="text-center">Sign in with Email</h2>
 
 						<div>
 							<label htmlFor="email">Email</label>
@@ -297,12 +357,12 @@ function Authentication({ setIsSignOpen }: Props) {
 						</div>
 
 						<button type="submit" className={styles.button}>
-							Sign up
+							Sign in
 						</button>
 					</form>
 				) : currentStep === steps.phone_number ? (
 					<form className={styles.list} onSubmit={signInUsingPhoneNumber}>
-						<h2 className="text-center">Sign up with Phone Number</h2>
+						<h2 className="text-center">Sign in with Phone Number</h2>
 
 						<div className="flex-center gap">
 							<select
@@ -369,7 +429,11 @@ function Authentication({ setIsSignOpen }: Props) {
 						</button>
 					</form>
 				) : currentStep === steps.profile_info ? (
-					<form className={styles.list} onSubmit={updateProfile}>
+					<form
+						className={styles.list}
+						onSubmit={updateProfile}
+						autoComplete="off"
+					>
 						<h2 className="text-center">Profile Info</h2>
 
 						<div>
@@ -394,7 +458,7 @@ function Authentication({ setIsSignOpen }: Props) {
 								defaultValue={auth.currentUser?.email || ""}
 								pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z0-0]{2,8}"
 								required
-								type="text"
+								type="email"
 								className={styles.input}
 							/>
 						</div>
@@ -407,9 +471,9 @@ function Authentication({ setIsSignOpen }: Props) {
 								required
 								className={styles.input}
 							>
-								{countries.map((country) => (
+								{countries.map(({ country, flag }) => (
 									<option key={country} value={country}>
-										{country}
+										{country} {flag}
 									</option>
 								))}
 							</select>
@@ -439,7 +503,7 @@ function Authentication({ setIsSignOpen }: Props) {
 								required
 								className={styles.input}
 							>
-								{["None", "Male", "Female"].map((gender) => (
+								{["Male", "Female"].map((gender) => (
 									<option key={gender} value={gender}>
 										{gender}
 									</option>
@@ -448,7 +512,37 @@ function Authentication({ setIsSignOpen }: Props) {
 						</div>
 
 						<div>
-							<label htmlFor="birthday">Birthday</label>
+							<label>Birthday</label>
+							<div className={styles.date_fields}>
+								<select
+									name="birthdayDay"
+									required
+									className={styles.input}
+								>
+									{daysInTheMonth.map((day) => (
+										<option key={day} value={day}>
+											{day}
+										</option>
+									))}
+								</select>
+								<select
+									name="birthdayMonth"
+									required
+									className={styles.input}
+								>
+									{months.map(({ month, index }) => (
+										<option key={month} value={`${index}`}>
+											{month}
+										</option>
+									))}
+								</select>
+								<input
+									type="year"
+									required
+									name="birthdayYear"
+									className={styles.input}
+								/>
+							</div>
 							<input
 								name="birthday"
 								id="birthday"
@@ -466,23 +560,28 @@ function Authentication({ setIsSignOpen }: Props) {
 				) : currentStep === steps.upload_image ? (
 					<div className={styles.list}>
 						<h2 className="text-center">Profile photo</h2>
-						<div
-							className="flex-center"
-							style={{ marginBottom: "100px" }}
-						>
-							<div className={styles.upload_image}>
-								<span>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 512 512"
-									>
-										<path d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z" />
-									</svg>
-								</span>
-							</div>
-						</div>
 						<label htmlFor="upload_image">
-							<span className={styles.button}>Upload photo</span>
+							<div
+								className="flex-center"
+								style={{ marginBottom: "100px" }}
+							>
+								<div className={styles.upload_image}>
+									<span>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 512 512"
+										>
+											<path d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z" />
+										</svg>
+									</span>
+								</div>
+							</div>
+							<span
+								className={styles.button}
+								style={{ display: "block" }}
+							>
+								Upload profile photo
+							</span>
 							<input
 								type="file"
 								accept="image/*"
@@ -519,7 +618,7 @@ function Authentication({ setIsSignOpen }: Props) {
 				) : currentStep === steps.finish ? (
 					<div className="flex-center flex-col" style={{ gap: "1rem" }}>
 						<h2>Registeration Completed</h2>
-						<p style={{ color: "#333" }}>{registeration.text}</p>
+						<p style={{ color: "#222" }}>{registeration.text}</p>
 						<button
 							onClick={() => {
 								setCurrentStep(steps.close);
@@ -530,6 +629,21 @@ function Authentication({ setIsSignOpen }: Props) {
 							style={{ width: "auto" }}
 						>
 							{registeration.button_text}
+						</button>
+					</div>
+				) : currentStep === steps.pending_approval_message ? (
+					<div className="flex-center flex-col" style={{ gap: "1rem" }}>
+						<p style={{ color: "#222" }}>
+							{registeration.pending_approval_message}
+						</p>
+						<button
+							onClick={() => {
+								setCurrentStep(steps.close);
+							}}
+							className={`${styles.button}`}
+							style={{ width: "auto", display: "block" }}
+						>
+							Ok
 						</button>
 					</div>
 				) : (

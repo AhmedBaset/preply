@@ -1,5 +1,45 @@
 [
 	{
+		"name": "United States",
+		"dial_code": "+1",
+		"code": "US"
+	},
+	{
+		"name": "Canada",
+		"dial_code": "+1",
+		"code": "CA"
+	},
+	{
+		"name": "Spain",
+		"dial_code": "+34",
+		"code": "ES"
+	},
+	{
+		"name": "Japan",
+		"dial_code": "+81",
+		"code": "JP"
+	},
+	{
+		"name": "China",
+		"dial_code": "+86",
+		"code": "CN"
+	},
+	{
+		"name": "Taiwan",
+		"dial_code": "+886",
+		"code": "TW"
+	},
+	{
+		"name": "Korea, Democratic People's Republic of Korea",
+		"dial_code": "+850",
+		"code": "KP"
+	},
+	{
+		"name": "Korea, Republic of South Korea",
+		"dial_code": "+82",
+		"code": "KR"
+	},
+	{
 		"name": "Afghanistan",
 		"dial_code": "+93",
 		"code": "AF"
@@ -184,11 +224,7 @@
 		"dial_code": "+237",
 		"code": "CM"
 	},
-	{
-		"name": "Canada",
-		"dial_code": "+1",
-		"code": "CA"
-	},
+
 	{
 		"name": "Cape Verde",
 		"dial_code": "+238",
@@ -214,11 +250,7 @@
 		"dial_code": "+56",
 		"code": "CL"
 	},
-	{
-		"name": "China",
-		"dial_code": "+86",
-		"code": "CN"
-	},
+
 	{
 		"name": "Christmas Island",
 		"dial_code": "+61",
@@ -529,11 +561,7 @@
 		"dial_code": "+1876",
 		"code": "JM"
 	},
-	{
-		"name": "Japan",
-		"dial_code": "+81",
-		"code": "JP"
-	},
+
 	{
 		"name": "Jersey",
 		"dial_code": "+44",
@@ -559,16 +587,7 @@
 		"dial_code": "+686",
 		"code": "KI"
 	},
-	{
-		"name": "Korea, Democratic People's Republic of Korea",
-		"dial_code": "+850",
-		"code": "KP"
-	},
-	{
-		"name": "Korea, Republic of South Korea",
-		"dial_code": "+82",
-		"code": "KR"
-	},
+
 	{
 		"name": "Kuwait",
 		"dial_code": "+965",
@@ -1014,11 +1033,7 @@
 		"dial_code": "+500",
 		"code": "GS"
 	},
-	{
-		"name": "Spain",
-		"dial_code": "+34",
-		"code": "ES"
-	},
+
 	{
 		"name": "Sri Lanka",
 		"dial_code": "+94",
@@ -1059,11 +1074,7 @@
 		"dial_code": "+963",
 		"code": "SY"
 	},
-	{
-		"name": "Taiwan",
-		"dial_code": "+886",
-		"code": "TW"
-	},
+
 	{
 		"name": "Tajikistan",
 		"dial_code": "+992",
@@ -1148,11 +1159,6 @@
 		"name": "United Kingdom",
 		"dial_code": "+44",
 		"code": "GB"
-	},
-	{
-		"name": "United States",
-		"dial_code": "+1",
-		"code": "US"
 	},
 	{
 		"name": "Uruguay",

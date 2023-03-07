@@ -1,5 +1,5 @@
 import { signOut } from "firebase/auth";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { auth, COLLECTION_NAME } from "../firebase-config";
 import { UserProps } from "../Types";
 import { ReactComponent as MenuIcon } from "./../assets/ellipsis-solid.svg";
@@ -11,6 +11,7 @@ type Props = {
 	queryText?: string;
 	isQueryCode?: boolean;
 	currentUser?: UserProps;
+	setIsSignOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function Header({
@@ -20,18 +21,23 @@ function Header({
 	queryText,
 	isQueryCode,
 	currentUser,
+	setIsSignOpen
 }: Props) {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const menuRef = useRef({} as HTMLUListElement)
 
 	useEffect(() => {
-		let interval: NodeJS.Timeout;
 		if (isMenuOpen) {
-			interval = setTimeout(() => {
-				setIsMenuOpen(false);
-			}, 5000);
+			document.body.addEventListener("click", handleMenuOutsideClick)
 		}
-		return () => clearTimeout(interval);
+		return () => document.removeEventListener("click", handleMenuOutsideClick)
 	}, [isMenuOpen]);
+
+	const handleMenuOutsideClick = (event: MouseEvent) => {
+		if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+			setIsMenuOpen(false);
+		}
+	}
 
 	return (
 		<header className="header">
@@ -56,34 +62,53 @@ function Header({
 				</label>
 			)}
 
-			{editMode === "NO" && currentUser && (
+			{editMode === "NO" && (
 				<div className="header-user">
-					<div style={{ color: "#555" }}>
-						Hello{" "}
-						<span className="text-dark" style={{ fontWeight: "500" }}>
-							{currentUser.name.split(" ").slice(0, 1)}
-						</span>
-					</div>
-					<img
-						src={currentUser.photo_url}
-						alt={currentUser.name}
-						className="profile-photo"
-					/>
-					<div className="menu-container flex-center">
-						<MenuIcon
-							style={{ fontSize: 32 }}
-							onClick={() => setIsMenuOpen(v => !v)}
-						/>
-						{isMenuOpen && (
-							<ul className="menu">
-								<li>
-									<button onClick={() => signOut(auth)}>
-										Sign out
-									</button>
-								</li>
-							</ul>
-						)}
-					</div>
+					{!auth.currentUser && (
+						<button
+							onClick={() => setIsSignOpen?.(true)}
+							className="btn btn-primary"
+						>
+							Login
+						</button>
+					)}
+					{currentUser && (
+						<>
+							<div style={{ color: "#555" }}>
+								Hello{" "}
+								<span
+									className="text-dark"
+									style={{ fontWeight: "500" }}
+								>
+									{currentUser.name.split(" ").slice(0, 1)}
+								</span>
+							</div>
+							<img
+								src={currentUser.photo_url}
+								alt={currentUser.name}
+								className="profile-photo"
+							/>
+						</>
+					)}
+					{auth.currentUser && (
+						<div className="menu-container flex-center">
+							<MenuIcon
+								style={{ fontSize: 32 }}
+								onClick={() => setIsMenuOpen((v) => !v)}
+							/>
+							{isMenuOpen && (
+								<ul className="menu" ref={menuRef}>
+									<li>
+										{auth.currentUser && (
+											<button onClick={() => signOut(auth)}>
+												Sign out
+											</button>
+										)}
+									</li>
+								</ul>
+							)}
+						</div>
+					)}
 				</div>
 			)}
 		</header>

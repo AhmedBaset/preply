@@ -17,9 +17,17 @@ type Props = {
 	setError?: React.Dispatch<React.SetStateAction<string>>;
 	doc_id: string;
 	setIsSignOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+	setStep?: React.Dispatch<React.SetStateAction<string>>;
 };
 
-function Teacher({ teacherData, editMode, setError, doc_id, setIsSignOpen }: Props) {
+function Teacher({
+	teacherData,
+	editMode,
+	setError,
+	doc_id,
+	setIsSignOpen,
+	setStep,
+}: Props) {
 	const [isShowAllDescription, setIsShowAllDescription] =
 		React.useState(false);
 	const [teacher, setTeacher] = React.useState(teacherData);
@@ -157,7 +165,7 @@ function Teacher({ teacherData, editMode, setError, doc_id, setIsSignOpen }: Pro
 								</p>
 							</div>
 						)}
-						{teacher.is_newly_joined && (
+						{/* {teacher.is_newly_joined && (
 							<p
 								onClick={() =>
 									editMode && openModal("is_newly_joined", "checkbox")
@@ -166,7 +174,7 @@ function Teacher({ teacherData, editMode, setError, doc_id, setIsSignOpen }: Pro
 							>
 								Newly joind
 							</p>
-						)}
+						)} */}
 						<div
 							className={`flex-center flex-wrap gap flex-auto flex-col`}
 						>
@@ -246,8 +254,19 @@ function Teacher({ teacherData, editMode, setError, doc_id, setIsSignOpen }: Pro
 					<div className="last buttons">
 						<button
 							onClick={() => {
-								if (settings.sign_up_mode && !auth.currentUser && setIsSignOpen) {
+								if (
+									settings.sign_up_mode &&
+									!auth.currentUser &&
+									setIsSignOpen
+								) {
 									setIsSignOpen(true);
+								} else if (
+									settings.registeration.pending_approval_message &&
+									setIsSignOpen &&
+									setStep
+								) {
+									setIsSignOpen(true);
+									setStep("PENDING_APPROVAL_MESSAGE");
 								} else {
 									window.open(settings.buttons_links.book_lesson);
 								}
@@ -259,8 +278,19 @@ function Teacher({ teacherData, editMode, setError, doc_id, setIsSignOpen }: Pro
 						</button>
 						<button
 							onClick={() => {
-								if (settings.sign_up_mode && !auth.currentUser && setIsSignOpen) {
+								if (
+									settings.sign_up_mode &&
+									!auth.currentUser &&
+									setIsSignOpen
+								) {
 									setIsSignOpen(true);
+								} else if (
+									settings.registeration.pending_approval_message &&
+									setIsSignOpen &&
+									setStep
+								) {
+									setIsSignOpen(true);
+									setStep("PENDING_APPROVAL_MESSAGE");
 								} else {
 									window.open(settings.buttons_links.message);
 								}

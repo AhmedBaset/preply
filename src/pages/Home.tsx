@@ -4,10 +4,23 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Teacher from "../components/Teacher";
 import { db } from "../firebase-config";
-import { OrderMethodType, QueriesProps, TeacherType, UserProps } from "../Types";
+import {
+	OrderMethodType,
+	QueriesProps,
+	TeacherType,
+	UserProps,
+} from "../Types";
 import Authentication from "./Authentication";
 
-const banner = require("./../settings.json").banner_image;
+const banners = require("./../settings.json").banner_image;
+const getRandom = (arr: string[]) => {
+	const random = Math.floor(Math.random() * arr.length);
+	return arr[random];
+};
+const banner = {
+	landscape: getRandom(banners.landscape),
+	portrait: getRandom(banners.portrait),
+};
 
 type Props = {
 	teachersLength: number;
@@ -18,7 +31,31 @@ type Props = {
 	setError: React.Dispatch<React.SetStateAction<string>>;
 	setQueries: React.Dispatch<React.SetStateAction<QueriesProps>>;
 	setOrderMethod: React.Dispatch<React.SetStateAction<OrderMethodType>>;
-	currentUser: UserProps
+	currentUser: UserProps;
+};
+
+const test = {
+	data: {
+		tutor_id: "string",
+		tutor_name: "Ahmed A.",
+		thumbnail_img_local_path: "image",
+		thumbnail_img_url: "image",
+		tutor_country: "Egypt",
+		tutor_teaches: "Arabic",
+		is_newly_joined: true,
+		languages: "Arabic /nNative",
+		lesson_duration: "string",
+		lessons: 55,
+		n_of_reviews: 55,
+		price: "12",
+		description:
+			"Hello my friend and friends. thanks for join me once again. If you are new here my name is keven...etc",
+		students: 55,
+		gender: "Male",
+		rating: "5",
+		ethnicity: "Middle east",
+	},
+	doc_id: "11",
 };
 
 function Home({
@@ -30,9 +67,10 @@ function Home({
 	setError,
 	setQueries,
 	setOrderMethod,
-	currentUser
+	currentUser,
 }: Props) {
 	const [isSignOpen, setIsSignOpen] = useState(false);
+	const [step, setStep] = useState("");
 
 	useEffect(() => {
 		(async () => {
@@ -53,19 +91,35 @@ function Home({
 	}, []);
 
 	useEffect(() => {
-		document.body.style.overflow = isSignOpen ? "hidden": "auto"
-	}, [isSignOpen])
-	
+		document.body.style.overflow = isSignOpen ? "hidden" : "auto";
+	}, [isSignOpen]);
 
 	return (
 		<>
-			<img
-				src={banner}
-				alt="Banner"
-				style={{ display: "block", width: "100%" }}
-			/>
+			<picture style={{ display: "block", width: "100%" }}>
+				<source
+					media="(orientation: landscape)"
+					srcSet={banner.landscape}
+					style={{ display: "block", width: "100%" }}
+				/>
+				<source
+					media="(orientation: portrait)"
+					srcSet={banner.portrait}
+					style={{ display: "block", width: "100%" }}
+				/>
+				<img
+					src={banner.landscape}
+					alt="Banner"
+					style={{ display: "block", width: "100%" }}
+				/>
+			</picture>
 
-			<Header teachersLength={teachersLength} editMode="NO" currentUser={currentUser} />
+			<Header
+				teachersLength={teachersLength}
+				editMode="NO"
+				currentUser={currentUser}
+				setIsSignOpen={setIsSignOpen}
+			/>
 
 			<div className="teachers-list">
 				{loading && (
@@ -92,8 +146,19 @@ function Home({
 							setError={setError}
 							doc_id={teacher.doc_id}
 							setIsSignOpen={setIsSignOpen}
+							setStep={setStep}
 						/>
 					))}
+
+				<Teacher
+					teacherData={test.data}
+					key={test.data.tutor_id}
+					editMode={false}
+					setError={setError}
+					doc_id={test.doc_id}
+					setIsSignOpen={setIsSignOpen}
+					setStep={setStep}
+				/>
 			</div>
 
 			<Footer
@@ -102,7 +167,13 @@ function Home({
 				setCurrentPage={setCurrentPage}
 			/>
 
-			{isSignOpen && <Authentication setIsSignOpen={setIsSignOpen} />}
+			{isSignOpen && (
+				<Authentication
+					setIsSignOpen={setIsSignOpen}
+					step={step}
+					setStep={setStep}
+				/>
+			)}
 		</>
 	);
 }

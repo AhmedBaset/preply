@@ -136,7 +136,7 @@ function App() {
 
 	useEffect(() => {
 		onAuthStateChanged(auth, async (user) => {
-			if (!user) return;
+			if (!user) return setCurrentUser(null)
 
 			const docRef = doc(db, "users", user.uid);
 
