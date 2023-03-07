@@ -62,6 +62,11 @@ const daysInTheMonth: string[] = [];
 for (let i = 1; i <= 31; i++) {
 	daysInTheMonth.push(`${i}`);
 }
+const years: string[] = [];
+const currentYear = new Date().getFullYear();
+for (let i = currentYear; i > currentYear - 70; i--) {
+	years.push(`${i}`);
+}
 
 const steps = {
 	choose_provider: "CHOOSE_PROVIDER",
@@ -91,6 +96,7 @@ function Authentication({ step, setIsSignOpen, setStep }: Props) {
 	const [image, setImage] = useState<File>();
 	const [croppedAreaPixels, setCroppedAreaPixels] = useState({} as Area);
 	const [isImageUploading, setIsImageUploading] = useState(false);
+	const [inputs, setInputs] = useState({ name: "", email: "" });
 
 	useEffect(() => {
 		if (currentStep === steps.close) {
@@ -118,6 +124,7 @@ function Authentication({ step, setIsSignOpen, setStep }: Props) {
 			return;
 		}
 		checkUserExist(steps.profile_info);
+		setInputs((v) => ({ ...v, email: auth.currentUser?.email || "" }));
 	};
 
 	const signInUsingEmailAndPassword = async (
@@ -143,6 +150,7 @@ function Authentication({ step, setIsSignOpen, setStep }: Props) {
 			}
 		}
 		checkUserExist(steps.profile_info);
+		setInputs((v) => ({ ...v, email }));
 	};
 
 	let confirmation = React.useRef<ConfirmationResult>();
@@ -442,10 +450,14 @@ function Authentication({ step, setIsSignOpen, setStep }: Props) {
 								name="userName"
 								id="name"
 								placeholder="John Doe"
-								defaultValue={auth.currentUser?.displayName || ""}
+								value={inputs.name}
+								onChange={(e) =>
+									setInputs((v) => ({ ...v, name: e.target.value }))
+								}
 								required
 								type="text"
 								className={styles.input}
+								autoComplete="off"
 							/>
 						</div>
 
@@ -455,11 +467,15 @@ function Authentication({ step, setIsSignOpen, setStep }: Props) {
 								name="email"
 								id="email"
 								placeholder="someone@example.com"
-								defaultValue={auth.currentUser?.email || ""}
+								value={inputs.email}
+								onChange={(e) =>
+									setInputs((v) => ({ ...v, email: e.target.value }))
+								}
 								pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z0-0]{2,8}"
 								required
 								type="email"
 								className={styles.input}
+								autoComplete="off"
 							/>
 						</div>
 
@@ -536,21 +552,18 @@ function Authentication({ step, setIsSignOpen, setStep }: Props) {
 										</option>
 									))}
 								</select>
-								<input
-									type="year"
-									required
+								<select
 									name="birthdayYear"
+									required
 									className={styles.input}
-								/>
+								>
+									{years.map((year) => (
+										<option key={year} value={year}>
+											{year}
+										</option>
+									))}
+								</select>
 							</div>
-							<input
-								name="birthday"
-								id="birthday"
-								required
-								placeholder="Birthday"
-								type="date"
-								className={styles.input}
-							/>
 						</div>
 
 						<button type="submit" className={styles.button}>
@@ -633,7 +646,7 @@ function Authentication({ step, setIsSignOpen, setStep }: Props) {
 					</div>
 				) : currentStep === steps.pending_approval_message ? (
 					<div className="flex-center flex-col" style={{ gap: "1rem" }}>
-						<p style={{ color: "#222" }}>
+						<p style={{ color: "#222", textAlign: "center" }}>
 							{registeration.pending_approval_message}
 						</p>
 						<button

@@ -6,7 +6,7 @@ export default function downscale(base64string: string, onSucced: (base64string:
 		const canvas = document.createElement("canvas");
 		const ctx = canvas.getContext("2d");
 
-		const [MAX_WIDTH, MAX_HEIGHT] = [500, 500];
+		const MAX_WIDTH = 500
 		let { width, height } = img;
 
       if (width <= 500) return onSucced(base64string);

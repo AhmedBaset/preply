@@ -34,30 +34,6 @@ type Props = {
 	currentUser: UserProps;
 };
 
-const test = {
-	data: {
-		tutor_id: "string",
-		tutor_name: "Ahmed A.",
-		thumbnail_img_local_path: "image",
-		thumbnail_img_url: "image",
-		tutor_country: "Egypt",
-		tutor_teaches: "Arabic",
-		is_newly_joined: true,
-		languages: "Arabic /nNative",
-		lesson_duration: "string",
-		lessons: 55,
-		n_of_reviews: 55,
-		price: "12",
-		description:
-			"Hello my friend and friends. thanks for join me once again. If you are new here my name is keven...etc",
-		students: 55,
-		gender: "Male",
-		rating: "5",
-		ethnicity: "Middle east",
-	},
-	doc_id: "11",
-};
-
 function Home({
 	teachersLength,
 	currentPage,
@@ -149,16 +125,6 @@ function Home({
 							setStep={setStep}
 						/>
 					))}
-
-				<Teacher
-					teacherData={test.data}
-					key={test.data.tutor_id}
-					editMode={false}
-					setError={setError}
-					doc_id={test.doc_id}
-					setIsSignOpen={setIsSignOpen}
-					setStep={setStep}
-				/>
 			</div>
 
 			<Footer

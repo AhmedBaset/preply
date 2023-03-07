@@ -98,8 +98,8 @@ header.header {
 		gap: 1rem;
 
 		.profile-photo {
-			width: 25px;
-			height: 25px;
+			width: 35px;
+			height: 35px;
 			border-radius: 50%;
 			border: 1px solid #777;
 		}
@@ -173,7 +173,7 @@ section.card {
 
 	@include mobile {
 		gap: 1rem !important;
-		padding: 0.5rem;
+		padding: 0.55rem;
 		border-radius: 1rem;
 		margin-bottom: 1rem;
 	}

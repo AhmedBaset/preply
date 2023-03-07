@@ -24,7 +24,7 @@ function Header({
 	setIsSignOpen
 }: Props) {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const menuRef = useRef({} as HTMLUListElement)
+	const menuRef = useRef({} as HTMLDivElement)
 
 	useEffect(() => {
 		if (isMenuOpen) {
@@ -91,16 +91,16 @@ function Header({
 						</>
 					)}
 					{auth.currentUser && (
-						<div className="menu-container flex-center">
+						<div ref={menuRef} className="menu-container flex-center">
 							<MenuIcon
 								style={{ fontSize: 32 }}
 								onClick={() => setIsMenuOpen((v) => !v)}
 							/>
 							{isMenuOpen && (
-								<ul className="menu" ref={menuRef}>
+								<ul className="menu">
 									<li>
 										{auth.currentUser && (
-											<button onClick={() => signOut(auth)}>
+											<button onClick={() => {signOut(auth); setIsMenuOpen(false)}}>
 												Sign out
 											</button>
 										)}

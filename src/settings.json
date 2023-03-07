@@ -45,8 +45,8 @@
 	},
 	"sign_up_mode": true,
 	"registeration": {
-		"text": "Welcome falakfjljafl afslkjldf",
-		"button_text": "Button",
+		"text": "Welcome!",
+		"button_text": "Ok",
 		"button_url": "",
 		"pending_approval_message": "Thank you for signing up! We are now reviewing your account. You will recieve an email with instructions on how to schedule your free tutoring lesson after we approve your account."
 	}
