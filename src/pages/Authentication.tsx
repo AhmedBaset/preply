@@ -611,7 +611,7 @@ refreshCurrentUser()
 								}}
 							/>
 						</label>
-						{!registeration.hide_skip_button && <button
+						{registeration.hide_skip_button !== 1 && <button
 							onClick={() => setCurrentStep(steps.finish)}
 							className={styles.button_skip}
 						>
