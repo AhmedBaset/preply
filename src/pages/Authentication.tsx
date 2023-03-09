@@ -85,9 +85,10 @@ type Props = {
 	setIsSignOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	step?: string;
 	setStep: React.Dispatch<React.SetStateAction<string>>;
+refreshCurrentUser: () => void
 };
 
-function Authentication({ step, setIsSignOpen, setStep }: Props) {
+function Authentication({ step, setIsSignOpen, setStep, refreshCurrentUser }: Props) {
 	const [currentStep, setCurrentStep] = useState(
 		step || steps.choose_provider
 	);
@@ -224,6 +225,7 @@ function Authentication({ step, setIsSignOpen, setStep }: Props) {
 			return;
 		}
 		setCurrentStep(steps.upload_image);
+refreshCurrentUser()
 	};
 
 	const uploadImage = async () => {
@@ -260,6 +262,7 @@ function Authentication({ step, setIsSignOpen, setStep }: Props) {
 
 			if (uploadState.state === "success") {
 				setCurrentStep(steps.finish);
+refreshCurrentUser()
 			}
 		});
 	};
@@ -652,6 +655,7 @@ function Authentication({ step, setIsSignOpen, setStep }: Props) {
 						<button
 							onClick={() => {
 								setCurrentStep(steps.close);
+setIsSignOpen(false)
 							}}
 							className={`${styles.button}`}
 							style={{ width: "auto", display: "block" }}
