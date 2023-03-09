@@ -134,16 +134,20 @@ function App() {
 		);
 	}, [orderMethod]);
 
-	useEffect(() => {
-		onAuthStateChanged(auth, async (user) => {
-			if (!user) return setCurrentUser(null)
-
-			const docRef = doc(db, "users", user.uid);
+async function refreshCurrentUser() {
+const docRef = doc(db, "users", user.uid);
 
 			const snapshot = await getDoc(docRef);
 			if (!snapshot.exists()) return;
 
 			setCurrentUser(snapshot.data() as UserProps);
+}
+
+	useEffect(() => {
+		onAuthStateChanged(auth, (user) => {
+			if (!user) return setCurrentUser(null)
+
+			refreshCurrentUser()
 		});
 	}, []);
 
@@ -198,6 +202,7 @@ function App() {
 								setQueries={setQueries}
 								setOrderMethod={setOrderMethod}
 								currentUser={currentUser}
+refreshCurrentUser={refreshCurrentUser}
 							/>
 						}
 					/>
