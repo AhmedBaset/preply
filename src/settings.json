@@ -45,6 +45,7 @@
 	},
 	"sign_up_mode": true,
 	"registeration": {
+"hide_skip_button": true,
 		"text": "Welcome!",
 		"button_text": "Ok",
 		"button_url": "",
