@@ -32,6 +32,7 @@ type Props = {
 	setQueries: React.Dispatch<React.SetStateAction<QueriesProps>>;
 	setOrderMethod: React.Dispatch<React.SetStateAction<OrderMethodType>>;
 	currentUser: UserProps;
+refreshCurrentUser: () => void;
 };
 
 function Home({
@@ -44,6 +45,7 @@ function Home({
 	setQueries,
 	setOrderMethod,
 	currentUser,
+refreshCurrentUser
 }: Props) {
 	const [isSignOpen, setIsSignOpen] = useState(false);
 	const [step, setStep] = useState("");
@@ -138,6 +140,7 @@ function Home({
 					setIsSignOpen={setIsSignOpen}
 					step={step}
 					setStep={setStep}
+refreshCurrentUser={refreshCurrentUser}
 				/>
 			)}
 		</>
