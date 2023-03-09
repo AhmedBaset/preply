@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import styles from "./Authentication.module.scss";
 import { ReactComponent as GoogleIcon } from "./../assets/google.svg";
@@ -99,10 +99,11 @@ function Authentication({ step, setIsSignOpen, setStep, refreshCurrentUser }: Pr
 	const [isImageUploading, setIsImageUploading] = useState(false);
 	const [inputs, setInputs] = useState({ name: "", email: "" });
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (currentStep === steps.close) {
 			setIsSignOpen(false);
 			setStep("");
+			setCurrentStep(steps.choose_provider)
 		}
 	}, [currentStep, steps.close]);
 

@@ -1,5 +1,5 @@
 import { doc, getDoc } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Teacher from "../components/Teacher";
@@ -50,7 +50,7 @@ refreshCurrentUser
 	const [isSignOpen, setIsSignOpen] = useState(false);
 	const [step, setStep] = useState("");
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		(async () => {
 			const docRef = doc(db, "settings", "deployed_settings");
 
