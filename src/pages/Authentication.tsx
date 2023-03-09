@@ -611,12 +611,12 @@ refreshCurrentUser()
 								}}
 							/>
 						</label>
-						<button
+						{!registeration.hide_skip_button && <button
 							onClick={() => setCurrentStep(steps.finish)}
 							className={styles.button_skip}
 						>
 							Skip
-						</button>
+						</button>}
 					</div>
 				) : currentStep === steps.crop_image && image ? (
 					<div className={styles.list}>
