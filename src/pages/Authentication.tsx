@@ -45,18 +45,18 @@ const countries: { country: string; flag: string }[] = Object.entries(
 }));
 const languages = Object.entries(languagesObj).map(([code, name]) => name);
 const months: { month: string; index: number }[] = [
-	"January",
-	"February",
-	"March",
-	"April",
+	"Jan.",
+	"Feb.",
+	"Mar.",
+	"Apr.",
 	"May",
 	"June",
 	"July",
-	"August",
-	"September",
-	"October",
-	"Novemver",
-	"December",
+	"Aug.",
+	"Sep.",
+	"Oct.",
+	"Nov.",
+	"Dec.",
 ].map((month, index) => ({ month, index }));
 const daysInTheMonth: string[] = [];
 for (let i = 1; i <= 31; i++) {
