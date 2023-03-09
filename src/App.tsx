@@ -135,7 +135,8 @@ function App() {
 	}, [orderMethod]);
 
 async function refreshCurrentUser() {
-const docRef = doc(db, "users", user.uid);
+	if (!auth.currentUser) return
+const docRef = doc(db, "users", auth.currentUser.uid);
 
 			const snapshot = await getDoc(docRef);
 			if (!snapshot.exists()) return;
