@@ -1,3 +1,6 @@
+import { Timestamp } from "firebase/firestore";
+const dropdowns = require("./settings.json").dropdowns;
+
 export type TeacherType = {
 	tutor_id: string;
 	tutor_name: string;
@@ -17,4 +20,24 @@ export type TeacherType = {
 	gender?: string;
 	rating?: string;
 	ethnicity?: string;
-};
+
+	update_time: Timestamp;
+	create_time: Timestamp;
+	
+}
+
+// export type QueriesProps = (
+// 	| QueryFieldFilterConstraint
+// 	| QueryOrderByConstraint
+// )[];
+
+export type QueriesProps = {
+	field: keyof TeacherType;
+	value: string[];
+}[];
+
+export type OrderMethodType =
+	| "tutor_id"
+	| "tutor_name"
+	| "create_time"
+	| "update_time";
