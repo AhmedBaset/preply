@@ -5,6 +5,12 @@
 /.pnp
 .pnp.js
 
+.env
+.firebaserc
+firebase.json
+package-lock.json
+
+
 # testing
 /coverage
 
