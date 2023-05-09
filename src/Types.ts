@@ -21,15 +21,21 @@ export type TeacherType = {
 	rating?: string;
 	ethnicity?: string;
 
-	update_time: Timestamp;
-	create_time: Timestamp;
+	update_time?: Timestamp;
+	create_time?: Timestamp;
 	
 }
 
-// export type QueriesProps = (
-// 	| QueryFieldFilterConstraint
-// 	| QueryOrderByConstraint
-// )[];
+export type UserProps = {
+	uid: string;
+	name: string;
+	email: string;
+	country: string;
+	language: string;
+	birthday: Timestamp;
+	gender: string;
+	photo_url: string; 
+} | null
 
 export type QueriesProps = {
 	field: keyof TeacherType;

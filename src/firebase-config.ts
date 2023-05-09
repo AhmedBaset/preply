@@ -1,5 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
    apiKey: "AIzaSyB9EB5VHYTI8C66w8_oR_6M9bDUzndvXrg",
@@ -24,8 +26,14 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+// Initialize Authentication 
+export const auth = getAuth(app)
+
 // Initialize Firestore
 export const db = getFirestore(app);
+
+// Initialize Storage
+export const storage = getStorage(app)
 
 // Collection name
 export const COLLECTION_NAME = "caio_collection_1";

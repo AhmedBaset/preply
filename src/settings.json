@@ -1,5 +1,5 @@
 {
-   "dropdowns": {
+	"dropdowns": {
 		"gender": {
 			"0": "None",
 			"1": "Male",
@@ -26,5 +26,29 @@
 	"buttons_links": {
 		"book_lesson": "https://www.google.com",
 		"message": "https://www.google.com"
+	},
+
+	"banner_image": {
+		"portrait": [
+			"https://picsum.photos/400/250",
+			"https://picsum.photos/400/250",
+			"https://picsum.photos/400/250",
+			"https://picsum.photos/400/250",
+			"https://picsum.photos/400/250"
+		],
+		"landscape": [
+			"https://picsum.photos/800/100",
+			"https://picsum.photos/800/100",
+			"https://picsum.photos/800/100",
+			"https://picsum.photos/800/100"
+		]
+	},
+	"sign_up_mode": true,
+	"registeration": {
+"hide_skip_button": 1,
+		"text": "Welcome!",
+		"button_text": "Ok",
+		"button_url": "",
+		"pending_approval_message": "Thank you for signing up! We are now reviewing your account. You will recieve an email with instructions on how to schedule your free tutoring lesson after we approve your account."
 	}
 }

@@ -1,0 +1,145 @@
+.container {
+	position: fixed;
+	inset: 0;
+	padding: 1.5rem;
+	background-color: rgba(0, 0, 0, 0.75);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: auto;
+}
+
+.wrapper {
+	background-color: white;
+	overflow: auto;
+	max-height: 100%;
+	width: min(100%, 500px);
+	border-radius: 1rem;
+	padding: 1.35rem 1rem;
+}
+
+.error {
+	background-color: rgba(255, 0, 60, 0.18);
+	padding: 1rem;
+	border-radius: 1rem;
+	margin-bottom: 1rem;
+}
+
+.list {
+	& > *:not(:last-child) {
+		margin-bottom: 0.7rem;
+	}
+}
+
+.button {
+	display: block;
+	width: 100%;
+	padding: 0.7rem 2rem;
+	border-radius: 50vmax;
+	border: 1px solid #aaa;
+	box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.1);
+	font-weight: 500;
+	font-size: 1rem;
+	cursor: pointer;
+	text-align: center;
+
+	--clr: var(--clr-primary);
+
+	background-color: var(--clr);
+	color: white;
+	fill: white;
+}
+
+.button_grid {
+	display: grid;
+	gap: 0.5rem;
+	align-items: center;
+	grid-template-columns: auto 1fr;
+}
+
+.Google {
+	--clr: #4285f4;
+}
+.Facebook {
+	--clr: #244586;
+}
+.Apple {
+	--clr: #222;
+}
+.Email {
+	--clr: #bb201d;
+}
+.Phone {
+	--clr: #049ce2;
+}
+
+label {
+	display: block;
+	margin-bottom: 0.3rem;
+}
+.input {
+	display: block;
+	width: 100%;
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+	border-radius: 1vmin;
+	box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.1);
+	border: 1px solid #bbb;
+	outline: none;
+	background-color: white;
+
+	&:focus {
+		box-shadow: 0 0 0 4px #ddd;
+	}
+}
+
+.upload_image {
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	position: relative;
+	background-color: #ddd;
+	border: 1px solid #888;
+
+	span {
+		position: absolute;
+		right: 5%;
+		bottom: 5%;
+		width: 50px;
+		height: 50px;
+		background-color: white;
+		border: 1px solid #888;
+		border-radius: 50%;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		fill: #000;
+		font-size: 1.2rem;
+	}
+}
+
+.button_skip {
+	width: 100%;
+	outline: none;
+	border: none;
+	padding: 0.5rem;
+	background: #eee;
+	border-radius: 50vmin;
+	cursor: pointer;
+	font-size: 12px;
+	opacity: 0.7;
+}
+
+.date_fields {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+
+	input,
+	select {
+		width: 100%;
+	}
+}

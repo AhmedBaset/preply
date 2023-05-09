@@ -1,10 +1,26 @@
 import { doc, getDoc } from "firebase/firestore";
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Teacher from "../components/Teacher";
 import { db } from "../firebase-config";
-import { OrderMethodType, QueriesProps, TeacherType } from "../Types";
+import {
+	OrderMethodType,
+	QueriesProps,
+	TeacherType,
+	UserProps,
+} from "../Types";
+import Authentication from "./Authentication";
+
+const banners = require("./../settings.json").banner_image;
+const getRandom = (arr: string[]) => {
+	const random = Math.floor(Math.random() * arr.length);
+	return arr[random];
+};
+const banner = {
+	landscape: getRandom(banners.landscape),
+	portrait: getRandom(banners.portrait),
+};
 
 type Props = {
 	teachersLength: number;
@@ -15,6 +31,8 @@ type Props = {
 	setError: React.Dispatch<React.SetStateAction<string>>;
 	setQueries: React.Dispatch<React.SetStateAction<QueriesProps>>;
 	setOrderMethod: React.Dispatch<React.SetStateAction<OrderMethodType>>;
+	currentUser: UserProps;
+refreshCurrentUser: () => void;
 };
 
 function Home({
@@ -26,8 +44,13 @@ function Home({
 	setError,
 	setQueries,
 	setOrderMethod,
+	currentUser,
+refreshCurrentUser
 }: Props) {
-	useEffect(() => {
+	const [isSignOpen, setIsSignOpen] = useState(false);
+	const [step, setStep] = useState("");
+
+	useLayoutEffect(() => {
 		(async () => {
 			const docRef = doc(db, "settings", "deployed_settings");
 
@@ -45,9 +68,36 @@ function Home({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	useEffect(() => {
+		document.body.style.overflow = isSignOpen ? "hidden" : "auto";
+	}, [isSignOpen]);
+
 	return (
 		<>
-			<Header teachersLength={teachersLength} editMode="NO" />
+			<picture style={{ display: "block", width: "100%" }}>
+				<source
+					media="(orientation: landscape)"
+					srcSet={banner.landscape}
+					style={{ display: "block", width: "100%" }}
+				/>
+				<source
+					media="(orientation: portrait)"
+					srcSet={banner.portrait}
+					style={{ display: "block", width: "100%" }}
+				/>
+				<img
+					src={banner.landscape}
+					alt="Banner"
+					style={{ display: "block", width: "100%" }}
+				/>
+			</picture>
+
+			<Header
+				teachersLength={teachersLength}
+				editMode="NO"
+				currentUser={currentUser}
+				setIsSignOpen={setIsSignOpen}
+			/>
 
 			<div className="teachers-list">
 				{loading && (
@@ -73,6 +123,8 @@ function Home({
 							editMode={false}
 							setError={setError}
 							doc_id={teacher.doc_id}
+							setIsSignOpen={setIsSignOpen}
+							setStep={setStep}
 						/>
 					))}
 			</div>
@@ -82,6 +134,15 @@ function Home({
 				currentPage={currentPage}
 				setCurrentPage={setCurrentPage}
 			/>
+
+			{isSignOpen && (
+				<Authentication
+					setIsSignOpen={setIsSignOpen}
+					step={step}
+					setStep={setStep}
+refreshCurrentUser={refreshCurrentUser}
+				/>
+			)}
 		</>
 	);
 }

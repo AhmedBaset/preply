@@ -1,5 +1,8 @@
-import React from "react";
-import { COLLECTION_NAME } from "../firebase-config";
+import { signOut } from "firebase/auth";
+import { useState, useEffect, useRef } from "react";
+import { auth, COLLECTION_NAME } from "../firebase-config";
+import { UserProps } from "../Types";
+import { ReactComponent as MenuIcon } from "./../assets/ellipsis-solid.svg";
 
 type Props = {
 	teachersLength: number;
@@ -7,6 +10,8 @@ type Props = {
 	setEditMode?: (editMode: boolean) => void;
 	queryText?: string;
 	isQueryCode?: boolean;
+	currentUser?: UserProps;
+	setIsSignOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function Header({
@@ -15,7 +20,25 @@ function Header({
 	setEditMode,
 	queryText,
 	isQueryCode,
+	currentUser,
+	setIsSignOpen
 }: Props) {
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const menuRef = useRef({} as HTMLDivElement)
+
+	useEffect(() => {
+		if (isMenuOpen) {
+			document.body.addEventListener("click", handleMenuOutsideClick)
+		}
+		return () => document.removeEventListener("click", handleMenuOutsideClick)
+	}, [isMenuOpen]);
+
+	const handleMenuOutsideClick = (event: MouseEvent) => {
+		if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+			setIsMenuOpen(false);
+		}
+	}
+
 	return (
 		<header className="header">
 			<p>{teachersLength} English teachers available</p>
@@ -37,6 +60,56 @@ function Header({
 						}
 					/>
 				</label>
+			)}
+
+			{editMode === "NO" && (
+				<div className="header-user">
+					{!auth.currentUser && (
+						<button
+							onClick={() => setIsSignOpen?.(true)}
+							className="btn btn-primary"
+						>
+							Login
+						</button>
+					)}
+					{currentUser && (
+						<>
+							<div style={{ color: "#555" }}>
+								Hello{" "}
+								<span
+									className="text-dark"
+									style={{ fontWeight: "500" }}
+								>
+									{currentUser.name.split(" ").slice(0, 1)}
+								</span>
+							</div>
+							<img
+								src={currentUser.photo_url}
+								alt={currentUser.name}
+								className="profile-photo"
+							/>
+						</>
+					)}
+					{auth.currentUser && (
+						<div ref={menuRef} className="menu-container flex-center">
+							<MenuIcon
+								style={{ fontSize: 32 }}
+								onClick={() => setIsMenuOpen((v) => !v)}
+							/>
+							{isMenuOpen && (
+								<ul className="menu">
+									<li>
+										{auth.currentUser && (
+											<button onClick={() => {signOut(auth); setIsMenuOpen(false)}}>
+												Sign out
+											</button>
+										)}
+									</li>
+								</ul>
+							)}
+						</div>
+					)}
+				</div>
 			)}
 		</header>
 	);
